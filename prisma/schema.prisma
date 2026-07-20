@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model News {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  excerpt   String
+  image     String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Gallery {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  image       String
+  category    String   @default("general")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String
+  updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model AdminUser {
+  id           String @id @default(cuid())
+  username     String @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Teacher {
+  id          String   @id @default(cuid())
+  name        String
+  title       String
+  bio         String?
+  image       String?
+  specialty   String?
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model StudentWork {
+  id          String   @id @default(cuid())
+  title       String
+  studentName String
+  description String?
+  image       String
+  category    String   @default("general")
+  year        String?
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  image       String?
+  date        DateTime
+  location    String?
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  image       String?
+  duration    String?
+  level       String   @default("beginner")
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String
+  role        String?
+  content     String
+  image       String?
+  rating      Int      @default(5)
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SchoolProfile {
+  id               String   @id @default(cuid())
+  overview         String   @default("")
+  history          String   @default("")
+  vision           String   @default("")
+  mission          String   @default("")
+  educationalGoals String   @default("")
+  departments      String   @default("")
+  facilities       String   @default("")
+  statistics       String   @default("{}")
+  galleryImages    String   @default("[]")
+  additionalInfo   String   @default("")
+  published        Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model PrincipalProfile {
+  id             String   @id @default(cuid())
+  name           String   @default("")
+  photo          String?
+  position       String   @default("")
+  biography      String   @default("")
+  welcomeMessage String   @default("")
+  resume         String   @default("")
+  achievements   String   @default("[]")
+  contactInfo    String?
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Ticket {
+  id              String   @id @default(cuid())
+  subject         String
+  userName        String
+  userEmail       String
+  userPhone       String?
+  status          String   @default("open") // open, answered, closed
+  hiddenFromUser  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  messages        TicketMessage[]
+}
+
+model TicketMessage {
+  id          String   @id @default(cuid())
+  ticketId    String
+  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  message     String
+  senderType  String   // "user" or "admin"
+  senderName  String
+  createdAt   DateTime @default(now())
+}
+
+model SecurityLog {
+  id        String   @id @default(cuid())
+  event     String   // login_success, login_failed, logout, etc.
+  ip        String
+  username  String?
+  details   String?
+  path      String?
+  createdAt DateTime @default(now())
+}
+
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  username  String
+  success   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
