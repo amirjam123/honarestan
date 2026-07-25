@@ -4,29 +4,33 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model News {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   title     String
-  slug      String   @unique
+  slug      String    @unique
   content   String
   excerpt   String
   image     String?
-  published Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  published Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
 }
 
 model Gallery {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String?
   image       String
-  category    String   @default("general")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category    String    @default("general")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  deletedBy   String?
 }
 
 model Page {
@@ -38,14 +42,16 @@ model Page {
 }
 
 model ContactMessage {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
   email     String
   phone     String?
   subject   String?
   message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
+  read      Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  deletedBy String?
 }
 
 model SiteSetting {
@@ -62,55 +68,63 @@ model AdminUser {
 }
 
 model Teacher {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   name        String
   title       String
   bio         String?
   image       String?
   specialty   String?
-  sortOrder   Int      @default(0)
-  published   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  sortOrder   Int       @default(0)
+  published   Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  deletedBy   String?
 }
 
 model StudentWork {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   studentName String
   description String?
   image       String
-  category    String   @default("general")
+  category    String    @default("general")
   year        String?
-  featured    Boolean  @default(false)
-  published   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  featured    Boolean   @default(false)
+  published   Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  deletedBy   String?
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String
   image       String?
   date        DateTime
   location    String?
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  deletedBy   String?
 }
 
 model Course {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String
   image       String?
   duration    String?
-  level       String   @default("beginner")
-  sortOrder   Int      @default(0)
-  published   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  level       String    @default("beginner")
+  sortOrder   Int       @default(0)
+  published   Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  deletedBy   String?
 }
 
 model Testimonial {
@@ -197,4 +211,60 @@ model LoginAttempt {
   username  String
   success   Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model BackupLog {
+  id          String   @id @default(cuid())
+  type        String   // "manual", "daily", "weekly", "monthly"
+  status      String   @default("pending") // "pending", "completed", "failed", "verified"
+  size        Int      @default(0) // size in bytes
+  records     Int      @default(0) // total records backed up
+  tables      String   @default("{}") // JSON: { "news": 5, "gallery": 10, ... }
+  checksum    String?  // SHA-256 hash for integrity verification
+  notes       String?
+  createdBy   String?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model MediaItem {
+  id          String   @id @default(cuid())
+  filename    String
+  originalName String
+  url         String
+  mimeType    String
+  size        Int      // in bytes
+  width       Int?
+  height      Int?
+  alt         String?
+  title       String?
+  caption     String?
+  folder      String   @default("uploads")
+  tags        String   @default("[]") // JSON array of tags
+  category    String   @default("general")
+  uploadedBy  String?
+  deletedAt   DateTime?
+  deletedBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SeoSetting {
+  id              String @id @default(cuid())
+  pagePath        String @unique
+  metaTitle       String
+  metaDescription String
+  canonicalUrl    String?
+  robots          String @default("index, follow")
+  ogTitle         String?
+  ogDescription   String?
+  ogImage         String?
+  ogType          String @default("website")
+  twitterCard     String @default("summary_large_image")
+  twitterTitle    String?
+  twitterDescription String?
+  twitterImage    String?
+  jsonLd          String @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

@@ -56,7 +56,9 @@ export default function Footer() {
               {[
                 { href: "/about", label: "درباره ما" },
                 { href: "/teachers", label: "اساتید" },
+                { href: "/courses", label: "دوره‌ها" },
                 { href: "/gallery", label: "گالری تصاویر" },
+                { href: "/events", label: "رویدادها" },
               ].map((link) => (
                 <Link
                   key={link.href}

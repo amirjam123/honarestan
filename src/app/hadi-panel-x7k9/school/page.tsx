@@ -32,8 +32,6 @@ const emptyProfile: SchoolProfile = {
 const textFields: { key: keyof SchoolProfile; label: string; placeholder: string; rows: number }[] = [
   { key: "overview", label: "معرفی کلی", placeholder: "توضیحات کلی درباره هنرستان...", rows: 4 },
   { key: "history", label: "تاریخچه", placeholder: "تاریخچه تأسیس و فعالیت‌های هنرستان...", rows: 4 },
-  { key: "vision", label: "چشم‌انداز", placeholder: "چشم‌انداز آینده هنرستان...", rows: 3 },
-  { key: "mission", label: "مأموریت", placeholder: "مأموریت و اهداف اصلی...", rows: 3 },
   { key: "educationalGoals", label: "اهداف آموزشی", placeholder: "اهداف آموزشی و پرورشی...", rows: 3 },
   { key: "departments", label: "بخش‌ها و گروه‌ها", placeholder: "معرفی بخش‌ها و گروه‌های آموزشی...", rows: 3 },
   { key: "facilities", label: "امکانات", placeholder: "امکانات و تجهیزات هنرستان...", rows: 3 },

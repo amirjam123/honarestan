@@ -1,10 +1,17 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/ui/Hero";
 import NewsCard from "@/components/ui/NewsCard";
+import JsonLd from "@/components/ui/JsonLd";
 import { formatDate } from "@/lib/utils";
+import { generateSeoMetadata } from "@/lib/seo";
 import { Chart } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateSeoMetadata("/news");
+}
 
 export default async function NewsPage() {
   const news = await prisma.news.findMany({
@@ -14,6 +21,7 @@ export default async function NewsPage() {
 
   return (
     <div>
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "اخبار هنرستان هادی", url: "https://honarestan-hadi.ir/news" }} />
       <Hero title="اخبار و اطلاعیه‌ها" subtitle="آخرین اخبار و رویدادهای هنرستان هادی" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {news.length > 0 ? (

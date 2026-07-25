@@ -41,13 +41,16 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireAdmin();
+    const admin = await requireAdmin();
     const { id } = await params;
-    await prisma.news.delete({ where: { id } });
+    await prisma.news.update({
+      where: { id },
+      data: { deletedAt: new Date(), deletedBy: admin.username },
+    });
     return NextResponse.json({ success: true });
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized") {

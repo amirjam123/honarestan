@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/auth";
 export async function GET() {
   try {
     const teachers = await prisma.teacher.findMany({
+      where: { deletedAt: null },
       orderBy: { sortOrder: "asc" },
     });
     return NextResponse.json(teachers);

@@ -12,10 +12,6 @@ const securityHeaders = [
     value: "max-age=63072000; includeSubDomains; preload",
   },
   {
-    key: "X-XSS-Protection",
-    value: "1; mode=block",
-  },
-  {
     key: "X-Frame-Options",
     value: "SAMEORIGIN",
   },
@@ -34,12 +30,12 @@ const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value: [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-      "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
-      "img-src 'self' data: blob: https://res.cloudinary.com https://images.unsplash.com",
-      "font-src 'self' https://cdn.jsdelivr.net",
-      "connect-src 'self'",
+      "default-src * 'unsafe-eval' 'unsafe-inline' data: blob:",
+      "script-src * 'unsafe-eval' 'unsafe-inline'",
+      "style-src * 'unsafe-inline'",
+      "img-src * data: blob:",
+      "font-src * data:",
+      "connect-src *",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",

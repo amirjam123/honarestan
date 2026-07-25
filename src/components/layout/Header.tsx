@@ -9,8 +9,10 @@ const navLinks = [
   { href: "/", label: "خانه" },
   { href: "/about", label: "درباره ما" },
   { href: "/teachers", label: "اساتید" },
+  { href: "/courses", label: "دوره‌ها" },
   { href: "/gallery", label: "گالری" },
   { href: "/news", label: "اخبار" },
+  { href: "/events", label: "رویدادها" },
   { href: "/contact", label: "تماس با ما" },
 ];
 
@@ -110,10 +112,9 @@ export default function Header() {
       )}
 
       {/* Mobile menu */}
+      {mobileOpen && (
       <div
-        className={`lg:hidden fixed top-16 right-0 bottom-0 w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-out ${
-          mobileOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className="lg:hidden fixed top-16 right-0 bottom-0 w-72 bg-white shadow-xl z-50 transform translate-x-0"
         role="dialog"
         aria-label="منوی موبایل"
       >
@@ -138,6 +139,7 @@ export default function Header() {
           })}
         </nav>
       </div>
+      )}
     </header>
   );
 }

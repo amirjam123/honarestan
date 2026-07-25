@@ -1,10 +1,29 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import JsonLd from "@/components/ui/JsonLd";
+import { generateSeoMetadata, getSeoForPage } from "@/lib/seo";
 import { ArrowLeft, Calendar } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const news = await prisma.news.findUnique({ where: { slug }, select: { title: true, excerpt: true } });
+  if (!news) return {};
+  const seo = await getSeoForPage(`/news/${slug}`);
+  return {
+    title: seo.metaTitle || news.title,
+    description: seo.metaDescription || news.excerpt,
+    openGraph: { title: seo.ogTitle || news.title, description: seo.ogDescription || news.excerpt },
+  };
+}
 
 export default async function NewsDetailPage({
   params,
@@ -20,6 +39,15 @@ export default async function NewsDetailPage({
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        headline: news.title,
+        description: news.excerpt,
+        image: news.image,
+        datePublished: news.createdAt.toISOString(),
+        publisher: { "@type": "Organization", name: "هنرستان هادی" },
+      }} />
       <Link
         href="/news"
         className="inline-flex items-center gap-1.5 text-primary-600 hover:text-primary-700 mb-8 transition-colors text-sm font-medium"

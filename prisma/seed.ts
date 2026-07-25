@@ -1,9 +1,10 @@
+import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client.js";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
-const adapter = new PrismaBetterSqlite3({
-  url: "file:./dev.db",
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
 });
 const prisma = new PrismaClient({ adapter });
 
@@ -98,10 +99,10 @@ async function main() {
     update: {},
     create: {
       id: "singleton",
-      overview: "هنرستان هادی یکی از معتبرترین مراکز آموزش هنرهای زیبا و صنایع خلاق در کشور است.",
+      overview: "",
       history: "هنرستان هادی در سال ۱۳۷۰ با هدف ارتقای سطح آموزش هنرهای زیبا تأسیس شد.",
-      vision: "تبدیل شدن به مرکز مرجع آموزش هنرهای زیبا در سطح ملی و بین‌المللی.",
-      mission: "ارائه آموزش‌های با کیفیت و کاربردی در زمینه‌های مختلف هنری با بهره‌گیری از اساتید مجرب.",
+      vision: "",
+      mission: "",
       educationalGoals: "پرورش خلاقیت، توسعه مهارت‌های فنی، و آماده‌سازی دانش‌آموزان برای ورود به بازار کار.",
       departments: "نقاشی و طراحی، خوشنویسی، مجسمه‌سازی، گرافیک دیجیتال، عکاسی",
       facilities: "کارگاه‌های مجهز، گالری نمایشگاهی، کتابخانه تخصصی، آزمایشگاه دیجیتال",
@@ -126,6 +127,73 @@ async function main() {
     },
   });
   console.log("PrincipalProfile seeded");
+
+  // Seed SEO Settings
+  const seoSettings = [
+    {
+      pagePath: "/",
+      metaTitle: "هنرستان هادی | مرکز آموزش هنرهای زیبا",
+      metaDescription: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق. آموزش نقاشی، مجسمه‌سازی، خوشنویسی، عکاسی و گرافیک با بهترین اساتید.",
+      robots: "index, follow",
+    },
+    {
+      pagePath: "/about",
+      metaTitle: "درباره ما | هنرستان هادی",
+      metaDescription: "آشنایی با تاریخچه، ارزش‌ها و اهداف هنرستان هادی. مرکز آموزش هنرهای زیبا در تهران با بیش از ۳۰ سال سابقه.",
+      robots: "index, follow",
+    },
+    {
+      pagePath: "/gallery",
+      metaTitle: "گالری تصاویر | هنرستان هادی",
+      metaDescription: "گالری تصاویر هنرستان هادی. مشاهده آثار هنری هنرجویان و اساتید در رشته‌های مختلف هنری.",
+      robots: "index, follow",
+    },
+    {
+      pagePath: "/news",
+      metaTitle: "اخبار | هنرستان هادی",
+      metaDescription: "آخرین اخبار و اطلاعیه‌های هنرستان هادی. رویدادها و اخبار آموزشی هنرستان.",
+      robots: "index, follow",
+    },
+    {
+      pagePath: "/contact",
+      metaTitle: "تماس با ما | هنرستان هادی",
+      metaDescription: "اطلاعات تماس هنرستان هادی. آدرس، تلفن و ایمیل برای ارتباط با ما. ثبت تیکت پشتیبانی.",
+      robots: "index, follow",
+    },
+    {
+      pagePath: "/courses",
+      metaTitle: "دوره‌های آموزشی | هنرستان هادی",
+      metaDescription: "دوره‌های آموزشی هنرستان هادی. نقاشی، خوشنویسی، مجسمه‌سازی، گرافیک و عکاسی.",
+      robots: "index, follow",
+    },
+    {
+      pagePath: "/events",
+      metaTitle: "رویدادها | هنرستان هادی",
+      metaDescription: "رویدادهای هنرستان هادی. نمایشگاه‌ها، جشنواره‌ها و برنامه‌های ویژه هنری.",
+      robots: "index, follow",
+    },
+    {
+      pagePath: "/teachers",
+      metaTitle: "اساتید | هنرستان هادی",
+      metaDescription: "اساتید مجرب هنرستان هادی. معرفی کادر آموزشی با تجربه در رشته‌های مختلف هنری.",
+      robots: "index, follow",
+    },
+    {
+      pagePath: "/student-works",
+      metaTitle: "آثار هنرجویان | هنرستان هادی",
+      metaDescription: "آثار هنری خلق شده توسط هنرجویان هنرستان هادی. نمایشگاه آثار برتر هنری.",
+      robots: "index, follow",
+    },
+  ];
+
+  for (const seo of seoSettings) {
+    await prisma.seoSetting.upsert({
+      where: { pagePath: seo.pagePath },
+      update: {},
+      create: seo,
+    });
+  }
+  console.log("SEO settings seeded");
 
   console.log("Seeding completed!");
 }

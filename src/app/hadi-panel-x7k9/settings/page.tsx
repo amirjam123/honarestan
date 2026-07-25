@@ -65,7 +65,7 @@ export default function AdminSettingsPage() {
         {/* Logo Section */}
         <div className="admin-card">
           <h2 className="text-sm font-bold mb-4 text-slate-800">لوگوی سایت</h2>
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col sm:flex-row items-start gap-6">
             <div className="flex-shrink-0">
               {settings.logo_url ? (
                 <div className="w-24 h-24 rounded-xl border-2 border-slate-200 overflow-hidden bg-white flex items-center justify-center">

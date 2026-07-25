@@ -6,6 +6,7 @@ import { slugify } from "@/lib/utils";
 export async function GET() {
   try {
     const news = await prisma.news.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(news);

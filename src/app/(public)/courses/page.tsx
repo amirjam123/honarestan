@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/ui/Hero";
+import JsonLd from "@/components/ui/JsonLd";
 import Link from "next/link";
+import { generateSeoMetadata } from "@/lib/seo";
 import { BookOpen, Clock, Chart, ArrowLeft, Envelope } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateSeoMetadata("/courses");
+}
 
 export default async function CoursesPage() {
   const courses = await prisma.course.findMany({
@@ -25,6 +32,7 @@ export default async function CoursesPage() {
 
   return (
     <div>
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "دوره‌های آموزشی هنرستان هادی", url: "https://honarestan-hadi.ir/courses" }} />
       <Hero title="دوره‌های آموزشی" subtitle="دوره‌های متنوع هنری برای تمام سنین و سطوح" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {courses.length > 0 ? (

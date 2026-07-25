@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import Hero from "@/components/ui/Hero";
 import NewsCard from "@/components/ui/NewsCard";
+import JsonLd from "@/components/ui/JsonLd";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
+import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd } from "@/lib/seo";
 import {
   BookOpen, UserGroup,
   ArrowLeft,
@@ -10,6 +13,10 @@ import {
 } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateSeoMetadata("/");
+}
 
 export default async function HomePage() {
   const [news, galleryItems, settings, teachers, studentWorks, schoolProfile, principalProfile] = await Promise.all([
@@ -42,8 +49,11 @@ export default async function HomePage() {
     {} as Record<string, string>
   );
 
+  const seo = await getSeoForPage("/");
+
   return (
     <div>
+      <JsonLd data={generateSchoolJsonLd()} />
       <Hero
         title={siteSettings["hero_title"] || "هنرستان هادی"}
         subtitle={siteSettings["hero_subtitle"]}
@@ -59,17 +69,11 @@ export default async function HomePage() {
             </div>
             <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-3">معرفی هنرستان</h2>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 lg:p-8">
               <h3 className="font-bold text-sm text-slate-800 mb-3">تاریخچه</h3>
               <p className="text-slate-600 text-sm leading-7">{schoolProfile.overview}</p>
             </div>
-            {schoolProfile.vision && (
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <h3 className="font-bold text-sm text-slate-800 mb-3">چشم انداز</h3>
-                <p className="text-slate-600 text-sm leading-7">{schoolProfile.vision}</p>
-              </div>
-            )}
           </div>
         </section>
       )}

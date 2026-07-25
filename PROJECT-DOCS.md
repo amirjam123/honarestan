@@ -3,10 +3,12 @@
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router, Turbopack)
 - **UI**: React 19 + Tailwind CSS v4
-- **Database**: Prisma ORM 7.8 + SQLite (via `@prisma/adapter-better-sqlite3`)
+- **Database**: Prisma ORM 7.8 + PostgreSQL (via `@prisma/adapter-pg`)
+- **Database Host**: Neon (serverless PostgreSQL)
 - **Auth**: JWT-based admin authentication (jsonwebtoken + bcryptjs)
 - **Language**: TypeScript
 - **Font**: Vazirmatn (Google Fonts, Persian/Farsi)
+- **Hosting**: Vercel
 
 ## Database Models
 - **News** - Blog/news posts with title, slug, content, excerpt, image, published status
@@ -15,14 +17,48 @@
 - **ContactMessage** - Contact form submissions
 - **SiteSetting** - Key-value site configuration
 - **AdminUser** - Admin authentication
+- **Teacher** - Teacher profiles with name, title, bio, image, specialty, sortOrder, published
+- **Course** - Course listings with title, description, image, duration, level, sortOrder, published
+- **StudentWork** - Student artwork with title, studentName, description, image, category, year, featured, published
+- **Event** - School events with title, description, image, date, location, published
+- **Testimonial** - Student/parent testimonials with name, role, content, image, rating, sortOrder, published
+- **SchoolProfile** - School overview, history, goals, departments, facilities, statistics (singleton)
+- **PrincipalProfile** - Principal name, photo, position, biography, welcome message, resume, achievements (singleton)
+- **Ticket** - Support tickets with subject, userName, userEmail, status
+- **TicketMessage** - Individual messages within tickets
+- **SecurityLog** - Security event audit trail
+- **LoginAttempt** - Login attempt tracking
 
 ## Admin Panel
-- URL: `/admin`
-- Default credentials: `admin` / `admin123`
-- Features: CRUD for news, gallery, pages, settings, message viewer
+- URL: `/hadi-panel-x7k9/login`
+- Default credentials: `honarestan` / `@hadiplmmlp`
+- Features:
+  - Dashboard with content counts
+  - CRUD for news, gallery, teachers, courses, events, student works
+  - Pages editor (Markdown)
+  - School profile management
+  - Principal profile management
+  - Settings management
+  - Contact messages viewer
+  - Support ticket management
+  - Excel template downloads and bulk import
+  - Backup information
+  - Password change
+
+## Public Pages
+- **Home** (`/`) — Hero, school introduction, principal welcome, teachers, featured student works, news, gallery preview
+- **About** (`/about`) — School history, goals, departments, facilities, principal biography, teachers preview
+- **Teachers** (`/teachers`) — All published teachers
+- **Courses** (`/courses`) — All published courses
+- **Gallery** (`/gallery`) — All gallery images with fullscreen viewer
+- **News** (`/news`) — All published news articles
+- **News Detail** (`/news/[slug]`) — Single news article
+- **Events** (`/events`) — All published events
+- **Student Works** (`/student-works`) — All published student artworks
+- **Contact** (`/contact`) — Support ticket system and contact form
 
 ## How to Add Content
-1. Go to `/admin/login`
+1. Go to `/hadi-panel-x7k9/login`
 2. Login with admin credentials
 3. Use the sidebar to navigate to the section you want to manage
 4. Add/edit/delete content using the forms
@@ -42,49 +78,83 @@ npm run build
 ```
 
 ### Vercel Deployment Steps:
-1. Set `DATABASE_URL` to PostgreSQL in Vercel environment variables
-2. Update `prisma/schema.prisma` datasource provider to `postgresql`
-3. Update `src/lib/prisma.ts` to use `@prisma/adapter-pg` instead of `@prisma/adapter-better-sqlite3`
-4. Run `npx prisma migrate deploy`
-5. Deploy with `vercel`
+1. Ensure `DATABASE_URL` is set in Vercel environment variables (Neon PostgreSQL connection string)
+2. Ensure `JWT_SECRET` is set in Vercel environment variables
+3. Deploy with `vercel --prod`
+4. The build command automatically runs `prisma generate`, `prisma migrate deploy`, and `next build`
+
+### Environment Variables
+| Variable | Description |
+|----------|------------|
+| `DATABASE_URL` | PostgreSQL connection string (Neon) |
+| `JWT_SECRET` | Secret key for JWT token signing |
+| `ADMIN_SECRET_PATH` | Custom admin panel URL path (default: hadi-panel-x7k9) |
 
 ## Folder Structure
 ```
 src/
 ├── app/
-│   ├── (public)/          # Public pages (Home, About, Gallery, News, Contact)
+│   ├── (public)/          # Public pages (Home, About, Gallery, News, Contact, etc.)
 │   │   ├── page.tsx       # Home page
 │   │   ├── layout.tsx     # Public layout (Header + Footer)
 │   │   ├── about/         # About page
 │   │   ├── gallery/       # Gallery page
 │   │   ├── news/          # News listing + detail pages
-│   │   └── contact/       # Contact form
-│   ├── admin/             # Admin panel
+│   │   ├── courses/       # Courses page
+│   │   ├── teachers/      # Teachers page
+│   │   ├── events/        # Events page
+│   │   ├── student-works/ # Student works page
+│   │   └── contact/       # Contact / ticket system
+│   ├── hadi-panel-x7k9/   # Admin panel
 │   │   ├── layout.tsx     # Admin layout (sidebar + auth check)
 │   │   ├── login/         # Login page
 │   │   ├── page.tsx       # Dashboard
 │   │   ├── news/          # News management
 │   │   ├── gallery/       # Gallery management
+│   │   ├── teachers/      # Teachers management
+│   │   ├── courses/       # Courses management
+│   │   ├── events/        # Events management
+│   │   ├── student-works/ # Student works management
 │   │   ├── pages/         # Page content management
+│   │   ├── school/        # School profile management
+│   │   ├── principal/     # Principal profile management
 │   │   ├── settings/      # Site settings
-│   │   └── messages/      # Contact messages viewer
+│   │   ├── messages/      # Contact messages viewer
+│   │   ├── tickets/       # Ticket management
+│   │   ├── templates/     # Excel template downloads
+│   │   ├── password/      # Password change
+│   │   └── backup/        # Backup information
 │   ├── api/               # API routes
-│   │   ├── auth/          # Authentication
+│   │   ├── auth/          # Authentication (login, logout, me, change-password)
 │   │   ├── news/          # News CRUD
 │   │   ├── gallery/       # Gallery CRUD
+│   │   ├── teachers/      # Teachers CRUD
+│   │   ├── courses/       # Courses CRUD
+│   │   ├── events/        # Events CRUD
+│   │   ├── student-works/ # Student works CRUD
 │   │   ├── pages/         # Pages CRUD
+│   │   ├── school/        # School profile
+│   │   ├── principal/     # Principal profile
 │   │   ├── settings/      # Settings CRUD
 │   │   ├── contact/       # Contact form + messages
-│   │   └── upload/        # File upload
+│   │   ├── tickets/       # Public ticket system
+│   │   ├── admin/         # Admin-only endpoints (backup, tickets, logs)
+│   │   ├── upload/        # File upload
+│   │   └── import/        # Excel import
 │   ├── layout.tsx         # Root layout (RTL, Persian fonts)
-│   └── globals.css        # Global styles with RTL support
+│   └── globals.css        # Global styles
 ├── components/
-│   ├── ui/                # Reusable UI (Hero, NewsCard, GalleryItem)
+│   ├── ui/                # Reusable UI (Hero, NewsCard, GalleryItem, ScrollToTop)
 │   ├── layout/            # Header, Footer
-│   └── admin/             # Admin components (AdminSidebar)
+│   ├── admin/             # Admin components (AdminSidebar, ExcelImport)
+│   └── icons/             # SVG icon library (40+ icons)
 ├── lib/
-│   ├── prisma.ts          # Database client (with adapter)
+│   ├── prisma.ts          # Database client
 │   ├── auth.ts            # Authentication utilities
+│   ├── password.ts        # Password strength validation
+│   ├── validation.ts      # Input validation and sanitization
+│   ├── security-logger.ts # Security event logging
+│   ├── admin-config.ts    # Admin path configuration
 │   └── utils.ts           # Utility functions
 └── generated/
     └── prisma/            # Auto-generated Prisma client
@@ -94,6 +164,10 @@ prisma/
 ├── migrations/            # Database migrations
 ├── seed.ts                # Seed script
 └── config.ts              # Prisma config
+
+docs/
+├── ADMIN-MANUAL.md        # Complete administrator manual
+└── ADMIN_QUICK_START.md   # Quick start guide for administrators
 ```
 
 ## Color Scheme
@@ -107,7 +181,7 @@ prisma/
 - All emojis replaced with professional SVG icons
 
 ## Key Technical Notes
-- Prisma 7.8 requires explicit adapter (`@prisma/adapter-better-sqlite3`)
+- Prisma 7.8 uses `@prisma/adapter-pg` for PostgreSQL connection
 - Images are set to `unoptimized: true` in next.config.ts (for environments without libvips)
 - All database-backed pages use `export const dynamic = "force-dynamic"` to prevent static generation issues
 - CSS `@import` for Google Fonts must come before `@import "tailwindcss"` in globals.css
@@ -115,10 +189,10 @@ prisma/
 - ESLint passes with 0 errors, 0 warnings
 
 ## Current Status
-- All public pages: Home, About, Gallery, News, Contact, Courses, Teachers, Student Works ✓
+- All public pages: Home, About, Gallery, News, Contact, Courses, Teachers, Student Works, Events ✓
 - Admin panel with full CRUD: News, Gallery, Pages, Settings, Messages, Courses, Teachers, Events, Testimonials, Student Works ✓
 - File upload API ✓
-- JWT authentication ✓
+- JWT authentication with rate limiting ✓
 - Database seeded with default admin + settings ✓
 - Build passes successfully ✓
 - Lint passes with 0 errors, 0 warnings ✓
@@ -127,3 +201,8 @@ prisma/
 - Accessibility: ARIA labels, keyboard nav, semantic HTML, skip-to-content ✓
 - SEO: Open Graph meta, structured metadata ✓
 - Responsive: Mobile-first, all breakpoints tested ✓
+- Admin sidebar with mobile hamburger menu ✓
+- Support ticket system with conversation threading ✓
+- Excel bulk import for teachers, courses, and news ✓
+- Password change UI in admin panel ✓
+- Admin logout button ✓

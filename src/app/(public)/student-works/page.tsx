@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/ui/Hero";
+import JsonLd from "@/components/ui/JsonLd";
+import { generateSeoMetadata } from "@/lib/seo";
 import { Photo, Sparkles } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateSeoMetadata("/student-works");
+}
 
 export default async function StudentWorksPage() {
   const works = await prisma.studentWork.findMany({
@@ -24,6 +31,7 @@ export default async function StudentWorksPage() {
 
   return (
     <div>
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "آثار هنرجویان هنرستان هادی", url: "https://honarestan-hadi.ir/student-works" }} />
       <Hero title="آثار هنرجویان" subtitle="نمایش آثار هنری خلق شده توسط هنرجویان مستعد هنرستان هادی" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {categories.length > 0 && (

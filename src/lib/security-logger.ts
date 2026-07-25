@@ -11,7 +11,9 @@ export type SecurityEvent =
   | "file_upload"
   | "record_create"
   | "record_update"
-  | "record_delete";
+  | "record_delete"
+  | "record_restore"
+  | "record_delete_permanent";
 
 interface LogEntry {
   event: SecurityEvent;

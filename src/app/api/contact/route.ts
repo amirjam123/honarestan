@@ -30,6 +30,7 @@ export async function GET() {
   try {
     await requireAdmin();
     const messages = await prisma.contactMessage.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(messages);
@@ -99,5 +100,53 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    await requireAdmin();
+    const body = await request.json();
+    const { id, read } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+
+    const message = await prisma.contactMessage.update({
+      where: { id },
+      data: { read: Boolean(read) },
+    });
+
+    return NextResponse.json(message);
+  } catch (error) {
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return NextResponse.json({ error: "Failed to update message" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    await requireAdmin();
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+
+    await prisma.contactMessage.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return NextResponse.json({ error: "Failed to delete message" }, { status: 500 });
   }
 }

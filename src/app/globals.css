@@ -1,5 +1,10 @@
-@import url("https://cdn.jsdelivr.net/gh/rastikerdar/iran-sansx@latest/css/iran-sansx.min.css?display=swap");
 @import "tailwindcss";
+
+/* Fix Chrome RTL: margin-inline:auto breaks centering in direction:rtl */
+[dir] .mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
 
 @theme {
   --color-primary-50: #eff6ff;
@@ -12,7 +17,7 @@
   --color-primary-700: #1d4ed8;
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a8a;
-  --font-vazir: "IRANSansX", "Tahoma", sans-serif;
+  --font-vazir: "Vazirmatn", "Tahoma", sans-serif;
 }
 
 html {
@@ -24,10 +29,8 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-img {
-  content-visibility: auto;
+  direction: rtl;
+  text-align: right;
 }
 
 .skip-to-content {
@@ -44,7 +47,6 @@ img {
   top: 1rem;
 }
 
-/* Admin form styles */
 .admin-card {
   background: #1e293b;
   border: 1px solid #334155;
