@@ -230,7 +230,7 @@ export async function PUT(request: NextRequest) {
       });
 
       await logSecurityEvent({
-        event: "media_bulk_restore",
+        event: "record_restore",
         ip,
         username: admin.username,
         details: `Bulk restored ${results.count} media items`,
@@ -247,7 +247,7 @@ export async function PUT(request: NextRequest) {
       });
 
       await logSecurityEvent({
-        event: "media_bulk_delete_permanent",
+        event: "record_delete_permanent",
         ip,
         username: admin.username,
         details: `Bulk permanently deleted ${results.count} media items`,
@@ -265,7 +265,7 @@ export async function PUT(request: NextRequest) {
       });
 
       await logSecurityEvent({
-        event: "media_restore",
+        event: "record_restore",
         ip,
         username: admin.username,
         details: `Restored media: ${item.originalName}`,
@@ -280,7 +280,7 @@ export async function PUT(request: NextRequest) {
       await prisma.mediaItem.delete({ where: { id } });
 
       await logSecurityEvent({
-        event: "media_delete_permanent",
+        event: "record_delete_permanent",
         ip,
         username: admin.username,
         details: `Permanently deleted media item ${id}`,
@@ -330,7 +330,7 @@ export async function DELETE(request: NextRequest) {
       await prisma.mediaItem.delete({ where: { id } });
 
       await logSecurityEvent({
-        event: "media_delete_permanent",
+        event: "record_delete_permanent",
         ip,
         username: admin.username,
         details: `Permanently deleted media item ${id}`,
@@ -343,7 +343,7 @@ export async function DELETE(request: NextRequest) {
       });
 
       await logSecurityEvent({
-        event: "media_delete",
+        event: "record_delete",
         ip,
         username: admin.username,
         details: `Soft deleted media item ${id}`,
