@@ -75,6 +75,7 @@ export async function GET(request: NextRequest) {
           id: true,
           name: true,
           title: true,
+          specialty: true,
           bio: true,
           image: true,
           createdAt: true,
