@@ -1,0 +1,135 @@
+# Honarestan Hadi (هنرستان هادی)
+
+Full-stack dynamic website for هنرستان هادی (Hadi Art School) in Iran.
+
+- **Stack**: Next.js 16, React 19, Tailwind CSS v4, Prisma 7.8 + PostgreSQL, TypeScript
+- **Database**: Neon (serverless PostgreSQL)
+- **Language**: Persian (Farsi) with RTL layout
+- **Admin CMS**: `/hadi-panel-x7k9`
+
+## Quick Start
+
+```bash
+npm install
+npm run dev          # Dev server at http://localhost:3000
+npm run build        # Production build
+npm run db:seed      # Seed database
+```
+
+## Prerequisites
+
+- Node.js 18+ (recommended: 20+)
+- npm 9+
+- PostgreSQL database (or Neon serverless)
+
+## Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/amirjam123/honarestan.git
+cd honarestan
+
+# 2. Install dependencies
+npm install
+
+# 3. Set up environment variables (see Environment Variables section)
+#    .env file is included in the repository for backup
+
+# 4. Generate Prisma client
+npx prisma generate
+
+# 5. Run database migrations
+npx prisma migrate deploy
+
+# 6. Seed the database (creates default admin + settings)
+npm run db:seed
+
+# 7. Start development server
+npm run dev
+```
+
+## Environment Variables
+
+Create a `.env` file in the project root (already included for backup):
+
+```env
+# PostgreSQL connection string (Neon or any PostgreSQL host)
+DATABASE_URL="postgresql://user:password@host:5432/dbname?sslmode=require"
+
+# Secret key for JWT token signing
+JWT_SECRET="your-secret-key-here"
+```
+
+| Variable | Purpose | Required |
+|----------|---------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `JWT_SECRET` | JWT token signing secret | Yes |
+
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server (http://localhost:3000) |
+| `npm run build` | Production build (generates Prisma + migrates + builds) |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run db:seed` | Seed database with default admin and settings |
+| `npx prisma generate` | Regenerate Prisma client |
+| `npx prisma migrate deploy` | Run pending migrations |
+| `npx prisma studio` | Open Prisma Studio (database GUI) |
+
+## Production Deployment
+
+### Vercel
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy to production
+vercel --prod --yes
+```
+
+### Manual Deployment
+
+```bash
+npm run build
+npm run start
+```
+
+## Default Admin Credentials
+
+- **URL**: `/hadi-panel-x7k9`
+- **Username**: `honarestan`
+- **Password**: `@hadiplmmlp`
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js app router
+│   ├── (public)/          # Public-facing pages
+│   ├── hadi-panel-x7k9/   # Admin panel
+│   └── api/               # API routes
+├── components/            # React components
+├── lib/                   # Utilities (prisma, auth, etc.)
+└── generated/             # Generated Prisma client
+prisma/
+├── schema.prisma          # Database schema
+├── migrations/            # Database migrations
+└── seed.ts                # Database seeder
+```
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Frontend**: React 19, Tailwind CSS v4
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL (Neon serverless)
+- **ORM**: Prisma 7.8
+- **Auth**: JWT (jsonwebtoken + bcryptjs)
+- **Language**: TypeScript
+
+## License
+
+Private project for هنرستان هادی.
