@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { CheckCircle, Loader, Eye, Globe, XCircle, AlertTriangle } from "@/components/icons";
+import { CheckCircle, Loader, Eye, Globe, XCircle, ExclamationTriangle } from "@/components/icons";
 
 interface SeoSetting {
   id: string;
@@ -238,7 +238,7 @@ export default function AdminSeoPage() {
                     </div>
                     <div className="flex items-center gap-1">
                       {status === "complete" && <CheckCircle size={14} className="text-emerald-500" />}
-                      {status === "incomplete" && <AlertTriangle size={14} className="text-amber-500" />}
+                      {status === "incomplete" && <ExclamationTriangle size={14} className="text-amber-500" />}
                       {status === "none" && <XCircle size={14} className="text-slate-300" />}
                     </div>
                   </button>
@@ -608,7 +608,7 @@ export default function AdminSeoPage() {
                         }`}
                       >
                         {result.status === "ok" && <CheckCircle size={14} className="text-emerald-500 mt-0.5 flex-shrink-0" />}
-                        {result.status === "warning" && <AlertTriangle size={14} className="text-amber-500 mt-0.5 flex-shrink-0" />}
+                        {result.status === "warning" && <ExclamationTriangle size={14} className="text-amber-500 mt-0.5 flex-shrink-0" />}
                         {result.status === "error" && <XCircle size={14} className="text-red-500 mt-0.5 flex-shrink-0" />}
                         <span className={
                           result.status === "ok" ? "text-emerald-700" :
