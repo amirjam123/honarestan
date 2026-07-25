@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   Chart, Megaphone, Photo, BookOpen, UserGroup, PaintBrush,
   Calendar, Document, Cog, Envelope, Home, AcademicCap, User, Download,
-  ChatBubble, Bars3, XMark, ArrowLeftOnRectangle, Lock, Trash, Globe,
+  ChatBubble, Bars3, XMark, ArrowLeftOnRectangle, Lock, Trash, Globe, Sparkles,
 } from "@/components/icons";
 import { getAdminPath } from "@/lib/admin-config";
 
@@ -92,6 +92,17 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
         </div>
 
         <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto" aria-label="منوی مدیریت">
+          <Link
+            href={getAdminPath("/setup")}
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+              pathname === getAdminPath("/setup")
+                ? "bg-amber-500 text-white"
+                : "text-amber-400 hover:text-amber-300 hover:bg-slate-800"
+            }`}
+          >
+            <Sparkles size={16} />
+            <span>راهنمای راه‌اندازی</span>
+          </Link>
           {adminLinks.map((link) => {
             const fullPath = getAdminPath(link.href);
             const isActive =
