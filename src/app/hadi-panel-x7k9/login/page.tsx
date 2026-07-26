@@ -27,13 +27,14 @@ export default function AdminLoginPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push(getAdminPath());
+        window.location.href = getAdminPath();
       } else {
         setError(data.error || "نام کاربری یا رمز عبور اشتباه است");
+        setLoading(false);
       }
-    } catch {
+    } catch (err) {
+      console.error("Login error:", err);
       setError("خطا در ورود به سیستم");
-    } finally {
       setLoading(false);
     }
   };
