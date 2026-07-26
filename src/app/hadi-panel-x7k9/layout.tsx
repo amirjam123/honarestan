@@ -24,8 +24,10 @@ export default function AdminLayout({
       return;
     }
 
+    console.log("[layout] checking auth, pathname:", pathname);
     fetch("/api/auth/me")
       .then((res) => {
+        console.log("[layout] auth/me status:", res.status);
         if (res.ok) {
           setAuthenticated(true);
         } else {
@@ -33,11 +35,12 @@ export default function AdminLayout({
           window.location.href = getAdminPath("/login");
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("[layout] auth/me error:", err);
         setAuthenticated(false);
         window.location.href = getAdminPath("/login");
       });
-  }, [isLoginPage]);
+  }, [isLoginPage, pathname]);
 
   // Setup wizard is optional — no forced redirect
 
