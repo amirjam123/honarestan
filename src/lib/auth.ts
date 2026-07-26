@@ -40,14 +40,9 @@ export function verifyToken(token: string): AdminPayload | null {
 
 export async function getAdminFromRequest(): Promise<AdminPayload | null> {
   const cookieStore = await cookies();
-  const allCookies = cookieStore.getAll();
-  console.log("[auth] all cookies:", allCookies.map(c => c.name));
   const token = cookieStore.get("admin_token")?.value;
-  console.log("[auth] admin_token present:", !!token);
   if (!token) return null;
-  const result = verifyToken(token);
-  console.log("[auth] verifyToken result:", result ? result.username : "null");
-  return result;
+  return verifyToken(token);
 }
 
 export async function requireAdmin(): Promise<AdminPayload> {
