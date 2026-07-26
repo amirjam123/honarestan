@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Hero from "@/components/ui/Hero";
 import GalleryItem from "@/components/ui/GalleryItem";
 import JsonLd from "@/components/ui/JsonLd";
-import { generateSeoMetadata } from "@/lib/seo";
+import { generateSeoMetadata, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, getSeoForPage, SITE_URL } from "@/lib/seo";
 import { Photo } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -13,15 +13,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function GalleryPage() {
-  const items = await prisma.gallery.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const [items, seo] = await Promise.all([
+    prisma.gallery.findMany({
+      orderBy: { createdAt: "desc" },
+    }),
+    getSeoForPage("/gallery"),
+  ]);
 
   const categories = [...new Set(items.map((item) => item.category))];
 
   return (
     <div>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "گالری تصاویر هنرستان هادی", url: "https://honarestan-hadi.ir/gallery" }} />
+      <JsonLd data={generateWebPageJsonLd("/gallery", "گالری تصاویر هنرستان هادی", "گالری تصاویر هنرستان هادی. مشاهده آثار هنری هنرجویان و اساتید.")} />
+      {generateJsonLd("/gallery", seo) && <JsonLd data={generateJsonLd("/gallery", seo)!} />}
+      <JsonLd data={generateBreadcrumbJsonLd([
+        { name: "صفحه اصلی", url: SITE_URL },
+        { name: "گالری تصاویر", url: `${SITE_URL}/gallery` },
+      ])} />
       <Hero title="گالری تصاویر" subtitle="نمایش آثار هنری و تصاویر هنرستان" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {items.length > 0 ? (

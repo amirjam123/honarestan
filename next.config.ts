@@ -28,17 +28,23 @@ const securityHeaders = [
     value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   },
   {
+    key: "X-XSS-Protection",
+    value: "1; mode=block",
+  },
+  {
     key: "Content-Security-Policy",
     value: [
-      "default-src * 'unsafe-eval' 'unsafe-inline' data: blob:",
-      "script-src * 'unsafe-eval' 'unsafe-inline'",
-      "style-src * 'unsafe-inline'",
-      "img-src * data: blob:",
-      "font-src * data:",
-      "connect-src *",
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://fonts.googleapis.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com",
+      "font-src 'self' data: https://fonts.gstatic.com",
+      "connect-src 'self'",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
+      "object-src 'none'",
+      "upgrade-insecure-requests",
     ].join("; "),
   },
 ];
@@ -71,13 +77,33 @@ const nextConfig: NextConfig = {
       },
       // Noindex for admin pages
       {
-        source: "/admin/:path*",
+        source: `/${ADMIN_SECRET_PATH}/:path*`,
         headers: [
           {
             key: "X-Robots-Tag",
             value: "noindex, nofollow",
           },
         ],
+      },
+      // API routes - no caching for authenticated endpoints
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate",
+          },
+        ],
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      // Redirect /hadi-panel-x7k9 to /hadi-panel-x7k9/login
+      {
+        source: `/${ADMIN_SECRET_PATH}`,
+        destination: `/${ADMIN_SECRET_PATH}/login`,
+        permanent: false,
       },
     ];
   },

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/ui/Hero";
 import JsonLd from "@/components/ui/JsonLd";
-import { generateSeoMetadata } from "@/lib/seo";
+import { generateSeoMetadata, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, getSeoForPage, SITE_URL } from "@/lib/seo";
 import { Photo, Sparkles } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -12,10 +12,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function StudentWorksPage() {
-  const works = await prisma.studentWork.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const [works, seo] = await Promise.all([
+    prisma.studentWork.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    getSeoForPage("/student-works"),
+  ]);
 
   const categories = [...new Set(works.map((w) => w.category))];
 
@@ -31,7 +34,12 @@ export default async function StudentWorksPage() {
 
   return (
     <div>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "آثار هنرجویان هنرستان هادی", url: "https://honarestan-hadi.ir/student-works" }} />
+      <JsonLd data={generateWebPageJsonLd("/student-works", "آثار هنرجویان هنرستان هادی", "آثار هنری خلق شده توسط هنرجویان هنرستان هادی.")} />
+      {generateJsonLd("/student-works", seo) && <JsonLd data={generateJsonLd("/student-works", seo)!} />}
+      <JsonLd data={generateBreadcrumbJsonLd([
+        { name: "صفحه اصلی", url: SITE_URL },
+        { name: "آثار هنرجویان", url: `${SITE_URL}/student-works` },
+      ])} />
       <Hero title="آثار هنرجویان" subtitle="نمایش آثار هنری خلق شده توسط هنرجویان مستعد هنرستان هادی" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {categories.length > 0 && (

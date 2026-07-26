@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/ui/Hero";
 import JsonLd from "@/components/ui/JsonLd";
-import { generateSeoMetadata } from "@/lib/seo";
+import { generateSeoMetadata, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, getSeoForPage, SITE_URL } from "@/lib/seo";
 import { UserGroup } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -12,14 +12,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TeachersPage() {
-  const teachers = await prisma.teacher.findMany({
-    where: { published: true },
-    orderBy: { sortOrder: "asc" },
-  });
+  const [teachers, seo] = await Promise.all([
+    prisma.teacher.findMany({
+      where: { published: true },
+      orderBy: { sortOrder: "asc" },
+    }),
+    getSeoForPage("/teachers"),
+  ]);
 
   return (
     <div>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "اساتید هنرستان هادی", url: "https://honarestan-hadi.ir/teachers" }} />
+      <JsonLd data={generateWebPageJsonLd("/teachers", "اساتید هنرستان هادی", "اساتید مجرب هنرستان هادی. معرفی کادر آموزشی با تجربه.")} />
+      {generateJsonLd("/teachers", seo) && <JsonLd data={generateJsonLd("/teachers", seo)!} />}
+      <JsonLd data={generateBreadcrumbJsonLd([
+        { name: "صفحه اصلی", url: SITE_URL },
+        { name: "اساتید", url: `${SITE_URL}/teachers` },
+      ])} />
       <Hero title="اساتید هنرستان" subtitle="تیمی از بهترین و مجرب‌ترین اساتید هنر کشور" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {teachers.length > 0 ? (

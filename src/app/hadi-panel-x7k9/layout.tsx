@@ -39,19 +39,7 @@ export default function AdminLayout({
       });
   }, [isLoginPage]);
 
-  useEffect(() => {
-    if (!authenticated || isLoginPage) return;
-    if (pathname.endsWith("/setup")) return;
-
-    fetch("/api/setup/status")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && !data.setupComplete) {
-          window.location.href = getAdminPath("/setup");
-        }
-      })
-      .catch(() => {});
-  }, [authenticated, isLoginPage, pathname]);
+  // Setup wizard is optional — no forced redirect
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
 

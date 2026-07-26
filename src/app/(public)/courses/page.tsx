@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Hero from "@/components/ui/Hero";
 import JsonLd from "@/components/ui/JsonLd";
 import Link from "next/link";
-import { generateSeoMetadata } from "@/lib/seo";
+import { generateSeoMetadata, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, getSeoForPage, SITE_URL } from "@/lib/seo";
 import { BookOpen, Clock, Chart, ArrowLeft, Envelope } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -13,10 +13,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function CoursesPage() {
-  const courses = await prisma.course.findMany({
-    where: { published: true },
-    orderBy: { sortOrder: "asc" },
-  });
+  const [courses, seo] = await Promise.all([
+    prisma.course.findMany({
+      where: { published: true },
+      orderBy: { sortOrder: "asc" },
+    }),
+    getSeoForPage("/courses"),
+  ]);
 
   const levelLabels: Record<string, string> = {
     beginner: "مبتدی",
@@ -32,7 +35,12 @@ export default async function CoursesPage() {
 
   return (
     <div>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "دوره‌های آموزشی هنرستان هادی", url: "https://honarestan-hadi.ir/courses" }} />
+      <JsonLd data={generateWebPageJsonLd("/courses", "دوره‌های آموزشی هنرستان هادی", "دوره‌های آموزشی هنرستان هادی. نقاشی، خوشنویسی، مجسمه‌سازی، گرافیک و عکاسی.")} />
+      {generateJsonLd("/courses", seo) && <JsonLd data={generateJsonLd("/courses", seo)!} />}
+      <JsonLd data={generateBreadcrumbJsonLd([
+        { name: "صفحه اصلی", url: SITE_URL },
+        { name: "دوره‌ها", url: `${SITE_URL}/courses` },
+      ])} />
       <Hero title="دوره‌های آموزشی" subtitle="دوره‌های متنوع هنری برای تمام سنین و سطوح" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {courses.length > 0 ? (

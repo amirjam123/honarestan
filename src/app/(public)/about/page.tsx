@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Hero from "@/components/ui/Hero";
 import JsonLd from "@/components/ui/JsonLd";
 import Link from "next/link";
-import { generateSeoMetadata, getSeoForPage } from "@/lib/seo";
+import { generateSeoMetadata, getSeoForPage, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, SITE_URL } from "@/lib/seo";
 import { ArrowLeft, UserGroup, Globe } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -45,7 +45,12 @@ export default async function AboutPage() {
 
   return (
     <div>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "AboutPage", name: "درباره هنرستان هادی", url: "https://honarestan-hadi.ir/about" }} />
+      <JsonLd data={generateWebPageJsonLd("/about", "درباره هنرستان هادی", "آشنایی با تاریخچه، ارزش‌ها و اهداف هنرستان هادی")} />
+      {generateJsonLd("/about", seo) && <JsonLd data={generateJsonLd("/about", seo)!} />}
+      <JsonLd data={generateBreadcrumbJsonLd([
+        { name: "صفحه اصلی", url: SITE_URL },
+        { name: "درباره ما", url: `${SITE_URL}/about` },
+      ])} />
       <Hero title="درباره هنرستان هادی" subtitle="آشنایی با تاریخچه و ارزش‌های ما" />
 
       {/* Principal Welcome Message */}

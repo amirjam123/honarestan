@@ -62,8 +62,9 @@ JWT_SECRET="your-secret-key-here"
 
 | Variable | Purpose | Required |
 |----------|---------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `DATABASE_URL` | PostgreSQL connection string (Neon) | Yes |
 | `JWT_SECRET` | JWT token signing secret | Yes |
+| `ADMIN_SECRET_PATH` | Custom admin panel URL path (default: `hadi-panel-x7k9`) | No |
 
 ## Available Scripts
 

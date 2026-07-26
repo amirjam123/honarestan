@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { CheckCircle, Loader, Upload } from "@/components/icons";
+import Link from "next/link";
+import { CheckCircle, Loader, Upload, Sparkles } from "@/components/icons";
+import { getAdminPath } from "@/lib/admin-config";
 
 interface Settings {
   [key: string]: string;
@@ -59,7 +61,16 @@ export default function AdminSettingsPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-6 text-slate-900">تنظیمات سایت</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-xl font-bold text-slate-900">تنظیمات سایت</h1>
+        <Link
+          href={getAdminPath("/setup")}
+          className="flex items-center gap-2 px-3 py-2 bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors text-xs font-medium"
+        >
+          <Sparkles size={14} />
+          اجرای مجدد جادوی راه‌اندازی
+        </Link>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Logo Section */}

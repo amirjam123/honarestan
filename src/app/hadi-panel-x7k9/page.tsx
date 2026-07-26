@@ -6,7 +6,7 @@ import {
   Megaphone, Photo, UserGroup, PaintBrush, Calendar, ChatBubble,
   Envelope, Clock, CheckCircle, XCircle, Search, Plus, ArrowUp,
   Cog, Shield, Loader, Bell, Eye, Download, AcademicCap, Document,
-  RefreshCw, Lock, Star,
+  RefreshCw, Lock, Star, Sparkles, ArrowRight,
 } from "@/components/icons";
 import { getAdminPath } from "@/lib/admin-config";
 
@@ -39,6 +39,7 @@ export default function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [setupInfo, setSetupInfo] = useState<{ setupComplete: boolean; setupSkipped: boolean; progress: number; completedCount: number; totalSteps: number } | null>(null);
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -66,6 +67,12 @@ export default function AdminDashboard() {
       }
 
       const logs = securityRes.logs || securityRes || [];
+
+      // Fetch setup status
+      fetch("/api/setup/status")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((setupData) => { if (setupData) setSetupInfo(setupData); })
+        .catch(() => {});
 
       setData({
         counts: {
@@ -223,6 +230,40 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {/* Setup Wizard Banner */}
+      {setupInfo && !setupInfo.setupComplete && (
+        <div className="admin-card border-amber-200 bg-amber-50/50">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+              <Sparkles size={20} className="text-amber-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-bold text-slate-900">
+                {setupInfo.setupSkipped ? "راه‌اندازی ناتمام" : "جادوی راه‌اندازی"}
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {setupInfo.setupSkipped
+                  ? `${setupInfo.completedCount} از ${setupInfo.totalSteps} مرحله تکمیل شده. می‌توانید هر زمان خواستید ادامه دهید.`
+                  : `مراحل اولیه راه‌اندازی سایت را تکمیل کنید (${setupInfo.completedCount} از ${setupInfo.totalSteps} مرحله انجام شده)`
+                }
+              </p>
+              <div className="mt-2 w-full max-w-xs">
+                <div className="w-full h-1.5 bg-amber-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${setupInfo.progress}%` }} />
+                </div>
+              </div>
+            </div>
+            <Link
+              href={getAdminPath("/setup")}
+              className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-xs font-medium whitespace-nowrap"
+            >
+              {setupInfo.setupSkipped ? "ادامه راه‌اندازی" : "شروع راه‌اندازی"}
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {statCards.map((stat) => {
@@ -258,6 +299,7 @@ export default function AdminDashboard() {
             { label: "تصویر جدید", href: getAdminPath("/gallery"), icon: Photo, color: "bg-emerald-50 text-emerald-600 hover:bg-emerald-100" },
             { label: "استاد جدید", href: getAdminPath("/teachers"), icon: UserGroup, color: "bg-amber-50 text-amber-600 hover:bg-amber-100" },
             { label: "تنظیمات", href: getAdminPath("/settings"), icon: Cog, color: "bg-slate-100 text-slate-600 hover:bg-slate-200" },
+            { label: "جادوی راه‌اندازی", href: getAdminPath("/setup"), icon: Sparkles, color: "bg-amber-50 text-amber-600 hover:bg-amber-100" },
           ].map((action) => {
             const Icon = action.icon;
             return (

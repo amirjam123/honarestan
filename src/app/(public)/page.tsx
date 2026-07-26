@@ -5,7 +5,7 @@ import JsonLd from "@/components/ui/JsonLd";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
-import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd } from "@/lib/seo";
+import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd, generateWebSiteJsonLd, generateEducationalOrganizationJsonLd, generateJsonLd } from "@/lib/seo";
 import {
   BookOpen, UserGroup,
   ArrowLeft,
@@ -54,6 +54,9 @@ export default async function HomePage() {
   return (
     <div>
       <JsonLd data={generateSchoolJsonLd()} />
+      <JsonLd data={generateEducationalOrganizationJsonLd()} />
+      <JsonLd data={generateWebSiteJsonLd()} />
+      {generateJsonLd("/", seo) && <JsonLd data={generateJsonLd("/", seo)!} />}
       <Hero
         title={siteSettings["hero_title"] || "هنرستان هادی"}
         subtitle={siteSettings["hero_subtitle"]}

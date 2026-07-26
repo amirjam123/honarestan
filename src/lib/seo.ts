@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://honarestan-hadi.ir";
 
+const ORG_ID = `${SITE_URL}#organization`;
+const SITE_ID = `${SITE_URL}#website`;
+
 interface SeoData {
   pagePath: string;
   metaTitle: string;
@@ -111,14 +114,55 @@ export function generateJsonLd(pagePath: string, seo: SeoData): Record<string, u
   }
 }
 
-export function generateSchoolJsonLd(): Record<string, unknown> {
+export function generateBreadcrumbJsonLd(items: { name: string; url: string }[]): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+export function generateWebSiteJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": SITE_ID,
     name: "هنرستان هادی",
     alternateName: "Honarestan Hadi",
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
+    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
+    inLanguage: "fa",
+    publisher: {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: "هنرستان هادی",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/icon.svg`,
+      },
+    },
+  };
+}
+
+export function generateOrganizationJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": ORG_ID,
+    name: "هنرستان هادی",
+    alternateName: "Honarestan Hadi",
+    url: SITE_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/icon.svg`,
+    },
+    image: `${SITE_URL}/icon.svg`,
     description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
     address: {
       "@type": "PostalAddress",
@@ -128,10 +172,202 @@ export function generateSchoolJsonLd(): Record<string, unknown> {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      availableLanguage: "Persian",
+      availableLanguage: ["Persian", "Farsi"],
     },
     sameAs: [],
   };
+}
+
+export function generateEducationalOrganizationJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "@id": ORG_ID,
+    name: "هنرستان هادی",
+    alternateName: "Honarestan Hadi",
+    url: SITE_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/icon.svg`,
+    },
+    image: `${SITE_URL}/icon.svg`,
+    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "IR",
+      addressLocality: "تهران",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      availableLanguage: ["Persian", "Farsi"],
+    },
+    sameAs: [],
+  };
+}
+
+export function generateSchoolJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "School",
+    "@id": ORG_ID,
+    name: "هنرستان هادی",
+    alternateName: "Honarestan Hadi",
+    url: SITE_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/icon.svg`,
+    },
+    image: `${SITE_URL}/icon.svg`,
+    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "IR",
+      addressLocality: "تهران",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      availableLanguage: ["Persian", "Farsi"],
+    },
+    sameAs: [],
+  };
+}
+
+export function generateWebPageJsonLd(
+  pagePath: string,
+  name: string,
+  description: string
+): Record<string, unknown> {
+  const pageUrl = `${SITE_URL}${pagePath}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${pageUrl}#webpage`,
+    url: pageUrl,
+    name: name,
+    description: description,
+    inLanguage: "fa",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": SITE_ID,
+    },
+    about: {
+      "@type": "Organization",
+      "@id": ORG_ID,
+    },
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/og-default.png`,
+    },
+  };
+}
+
+export function generateLocalBusinessJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${SITE_URL}#localbusiness`,
+    name: "هنرستان هادی",
+    alternateName: "Honarestan Hadi",
+    url: SITE_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/icon.svg`,
+    },
+    image: `${SITE_URL}/icon.svg`,
+    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "IR",
+      addressLocality: "تهران",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 35.6892,
+      longitude: 51.389,
+    },
+    telephone: "",
+    email: "",
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      availableLanguage: ["Persian", "Farsi"],
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "ایران",
+    },
+    sameAs: [],
+  };
+}
+
+export function generateContactPointJsonLd(
+  telephone?: string,
+  email?: string
+): Record<string, unknown> {
+  const contactPoint: Record<string, unknown> = {
+    "@type": "ContactPoint",
+    contactType: "customer service",
+    availableLanguage: ["Persian", "Farsi"],
+  };
+  if (telephone) contactPoint.telephone = telephone;
+  if (email) contactPoint.email = email;
+  return contactPoint;
+}
+
+export function generateEventJsonLd(event: {
+  title: string;
+  description: string;
+  date: Date;
+  location?: string | null;
+  image?: string | null;
+  url: string;
+}): Record<string, unknown> {
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.title,
+    description: event.description,
+    startDate: event.date.toISOString(),
+    url: event.url,
+    organizer: {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: "هنرستان هادی",
+      url: SITE_URL,
+    },
+    location: event.location
+      ? {
+          "@type": "Place",
+          name: event.location,
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "تهران",
+            addressCountry: "IR",
+          },
+        }
+      : {
+          "@type": "Place",
+          name: "هنرستان هادی",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "تهران",
+            addressCountry: "IR",
+          },
+        },
+    performer: {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: "هنرستان هادی",
+    },
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  };
+  if (event.image) {
+    schema.image = event.image;
+  }
+  return schema;
 }
 
 export { SITE_URL };

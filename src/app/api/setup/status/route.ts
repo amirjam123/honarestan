@@ -20,6 +20,7 @@ export async function GET() {
     );
 
     const setupComplete = settingsMap["setup_complete"] === "true";
+    const setupSkipped = settingsMap["setup_skipped"] === "true";
 
     const steps = {
       changePassword: setupComplete,
@@ -40,6 +41,7 @@ export async function GET() {
 
     return NextResponse.json({
       setupComplete,
+      setupSkipped,
       steps,
       completedCount,
       totalSteps,

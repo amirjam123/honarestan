@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/auth";
 export async function GET() {
   try {
     const courses = await prisma.course.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, published: true },
       orderBy: { sortOrder: "asc" },
     });
     return NextResponse.json(courses);

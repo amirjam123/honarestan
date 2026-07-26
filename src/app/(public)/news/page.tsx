@@ -4,7 +4,7 @@ import Hero from "@/components/ui/Hero";
 import NewsCard from "@/components/ui/NewsCard";
 import JsonLd from "@/components/ui/JsonLd";
 import { formatDate } from "@/lib/utils";
-import { generateSeoMetadata } from "@/lib/seo";
+import { generateSeoMetadata, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, getSeoForPage, SITE_URL } from "@/lib/seo";
 import { Chart } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -14,14 +14,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function NewsPage() {
-  const news = await prisma.news.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const [news, seo] = await Promise.all([
+    prisma.news.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    getSeoForPage("/news"),
+  ]);
 
   return (
     <div>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "اخبار هنرستان هادی", url: "https://honarestan-hadi.ir/news" }} />
+      <JsonLd data={generateWebPageJsonLd("/news", "اخبار هنرستان هادی", "آخرین اخبار و اطلاعیه‌های هنرستان هادی")} />
+      {generateJsonLd("/news", seo) && <JsonLd data={generateJsonLd("/news", seo)!} />}
+      <JsonLd data={generateBreadcrumbJsonLd([
+        { name: "صفحه اصلی", url: SITE_URL },
+        { name: "اخبار", url: `${SITE_URL}/news` },
+      ])} />
       <Hero title="اخبار و اطلاعیه‌ها" subtitle="آخرین اخبار و رویدادهای هنرستان هادی" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {news.length > 0 ? (

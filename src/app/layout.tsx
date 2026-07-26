@@ -23,6 +23,18 @@ export const metadata: Metadata = {
     siteName: "هنرستان هادی",
     title: "هنرستان هادی | مرکز آموزش هنرهای زیبا",
     description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق.",
+    url: "https://honarestan-hadi.ir",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "هنرستان هادی | مرکز آموزش هنرهای زیبا",
+    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق.",
+  },
+  metadataBase: new URL("https://honarestan-hadi.ir"),
+  applicationName: "هنرستان هادی",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
   },
 };
 
@@ -38,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="ltr" className="h-full antialiased">
+    <html lang="fa" dir="rtl" className="h-full antialiased">
       <head>
         <meta name="theme-color" content="#2563eb" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

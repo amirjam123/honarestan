@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/auth";
 export async function GET() {
   try {
     const events = await prisma.event.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, published: true },
       orderBy: { date: "desc" },
     });
     return NextResponse.json(events);

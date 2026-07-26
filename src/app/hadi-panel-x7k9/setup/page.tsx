@@ -91,6 +91,7 @@ export default function SetupWizardPage() {
   const [course, setCourse] = useState({ title: "", description: "", duration: "", level: "beginner" });
   const [news, setNews] = useState({ title: "", excerpt: "", content: "" });
   const [uploading, setUploading] = useState(false);
+  const [showSkipConfirm, setShowSkipConfirm] = useState(false);
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -404,43 +405,69 @@ export default function SetupWizardPage() {
     }
   };
 
+  const handleSkip = async () => {
+    setSaving(true);
+    try {
+      await fetch("/api/setup/skip", { method: "POST" });
+      router.push(getAdminPath());
+    } catch {
+      setSaving(false);
+      setStepError("خطا در رد کردن راه‌اندازی");
+    }
+  };
+
   const goNext = async () => {
     const stepKey = STEP_DEFINITIONS[currentStep]?.key;
     let saved = false;
 
-    if (stepKey === "changePassword") saved = await handlePasswordChange();
-    else if (stepKey === "uploadLogo") saved = await handleSaveSettings({ logo_url: settings["logo_url"] || "" });
-    else if (stepKey === "schoolName") {
-      if (!settings["school_name"]?.trim()) {
-        setStepError("نام مدرسه را وارد کنید");
-        return;
+    if (stepKey === "changePassword") {
+      if (passwords.current && passwords.new && passwords.confirm) {
+        saved = await handlePasswordChange();
       }
-      saved = await handleSaveSettings({ school_name: settings["school_name"] });
-    }
-    else if (stepKey === "contactInfo") {
-      if (!settings["address"]?.trim() || !settings["phone"]?.trim() || !settings["email"]?.trim()) {
-        setStepError("تمام فیلدهای تماس را پر کنید");
-        return;
+    } else if (stepKey === "uploadLogo") {
+      if (settings["logo_url"]) {
+        saved = await handleSaveSettings({ logo_url: settings["logo_url"] });
       }
-      saved = await handleSaveSettings({ address: settings["address"], phone: settings["phone"], email: settings["email"] });
-    }
-    else if (stepKey === "homepage") saved = await handleSaveSettings({ hero_title: settings["hero_title"] || "", hero_subtitle: settings["hero_subtitle"] || "" });
-    else if (stepKey === "principalProfile") {
-      if (!principal.name?.trim()) {
-        setStepError("نام مدیر را وارد کنید");
-        return;
+    } else if (stepKey === "schoolName") {
+      if (settings["school_name"]?.trim()) {
+        saved = await handleSaveSettings({ school_name: settings["school_name"] });
       }
-      saved = await handleSavePrincipal();
+    } else if (stepKey === "contactInfo") {
+      if (settings["address"]?.trim() || settings["phone"]?.trim() || settings["email"]?.trim()) {
+        saved = await handleSaveSettings({
+          address: settings["address"] || "",
+          phone: settings["phone"] || "",
+          email: settings["email"] || "",
+        });
+      }
+    } else if (stepKey === "homepage") {
+      if (settings["hero_title"]?.trim() || settings["hero_subtitle"]?.trim()) {
+        saved = await handleSaveSettings({ hero_title: settings["hero_title"] || "", hero_subtitle: settings["hero_subtitle"] || "" });
+      }
+    } else if (stepKey === "principalProfile") {
+      if (principal.name?.trim()) {
+        saved = await handleSavePrincipal();
+      }
+    } else if (stepKey === "schoolProfile") {
+      if (schoolData.overview?.trim() || schoolData.history?.trim()) {
+        saved = await handleSaveSchool();
+      }
+    } else if (stepKey === "firstTeacher") {
+      if (teacher.name?.trim() && teacher.title?.trim()) {
+        saved = await handleCreateTeacher();
+      }
+    } else if (stepKey === "firstCourse") {
+      if (course.title?.trim() && course.description?.trim()) {
+        saved = await handleCreateCourse();
+      }
+    } else if (stepKey === "firstNews") {
+      if (news.title?.trim() && news.content?.trim()) {
+        saved = await handleCreateNews();
+      }
     }
-    else if (stepKey === "schoolProfile") saved = await handleSaveSchool();
-    else if (stepKey === "firstTeacher") saved = await handleCreateTeacher();
-    else if (stepKey === "firstCourse") saved = await handleCreateCourse();
-    else if (stepKey === "firstNews") saved = await handleCreateNews();
 
-    if (saved || stepKey === "verifyWebsite") {
-      await fetchStatus();
-      if (currentStep < STEP_DEFINITIONS.length - 1) setCurrentStep((prev) => prev + 1);
-    }
+    await fetchStatus();
+    if (currentStep < STEP_DEFINITIONS.length - 1) setCurrentStep((prev) => prev + 1);
   };
 
   const goPrev = () => { if (currentStep > 0) setCurrentStep((prev) => prev - 1); };
@@ -468,13 +495,19 @@ export default function SetupWizardPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 relative">
+        <button
+          onClick={() => setShowSkipConfirm(true)}
+          className="absolute top-0 left-0 text-xs text-slate-400 hover:text-slate-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-slate-100"
+        >
+          رد کردن راه‌اندازی
+        </button>
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-medium mb-3">
           <Globe size={14} />
           راه‌اندازی اولیه
         </div>
         <h1 className="text-2xl font-bold text-slate-900 mb-2">جادوی راه‌اندازی</h1>
-        <p className="text-sm text-slate-500">مرحله زیر را برای تکمیل راه‌اندازی سایت دنبال کنید</p>
+        <p className="text-sm text-slate-500">مراحل زیر را برای تکمیل راه‌اندازی سایت دنبال کنید. می‌توانید هر زمان خواستید از این صفحه خارج شوید.</p>
       </div>
 
       <div className="admin-card mb-6">
@@ -505,12 +538,21 @@ export default function SetupWizardPage() {
                 key={step.key}
                 role="tab"
                 aria-selected={isCurrent}
-                aria-label={`${step.label}${isComplete ? " (تکمیل شده)" : ""}`}
+                aria-label={`${step.label}${isComplete ? " (تکمیل شده)" : " (در انتظار)"}`}
                 onClick={() => { setCurrentStep(i); setStepError(null); }}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium transition-all whitespace-nowrap ${
-                  isCurrent ? "bg-primary-600 text-white shadow-sm" : isComplete ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100" : "bg-slate-50 text-slate-500 hover:bg-slate-100"
-                }`}>
-                {isComplete ? <CheckCircle size={14} /> : <StepIcon size={14} />}
+                  isCurrent
+                    ? "bg-primary-600 text-white shadow-sm"
+                    : isComplete
+                      ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                      : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                }`}
+              >
+                {isComplete ? (
+                  <CheckCircle size={14} className={isCurrent ? "text-white" : "text-emerald-500"} />
+                ) : (
+                  <StepIcon size={14} />
+                )}
                 <span>{step.label}</span>
               </button>
             );
@@ -1015,6 +1057,12 @@ export default function SetupWizardPage() {
             )}
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowSkipConfirm(true)}
+              className="text-xs text-slate-400 hover:text-slate-600 transition-colors px-2 py-1.5 rounded hover:bg-slate-50"
+            >
+              رد کردن
+            </button>
             {currentStep > 0 && (
               <button
                 onClick={goPrev}
@@ -1049,6 +1097,34 @@ export default function SetupWizardPage() {
           </div>
         </div>
       </div>
+
+      {/* Skip Confirmation Dialog */}
+      {showSkipConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowSkipConfirm(false)}>
+          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-base font-bold text-slate-900 mb-2">رد کردن راه‌اندازی؟</h3>
+            <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+              می‌توانید تنظیمات هنرستان را بعداً از بخش تنظیمات یا داشبورد تکمیل کنید. پیشرفت فعلی شما ذخیره خواهد شد.
+            </p>
+            <div className="flex items-center gap-3 justify-end">
+              <button
+                onClick={() => setShowSkipConfirm(false)}
+                className="admin-btn-secondary text-xs"
+              >
+                ادامه راه‌اندازی
+              </button>
+              <button
+                onClick={handleSkip}
+                disabled={saving}
+                className="admin-btn-primary text-xs flex items-center gap-2 disabled:opacity-50"
+              >
+                {saving ? <Loader size={14} className="animate-spin" /> : null}
+                رد کردن و رفتن به داشبورد
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/auth";
 export async function GET() {
   try {
     const gallery = await prisma.gallery.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(gallery);
