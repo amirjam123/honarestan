@@ -3,15 +3,15 @@ import { loginAdmin } from "@/lib/auth";
 import { logSecurityEvent, logLoginAttempt, getClientIp } from "@/lib/security-logger";
 
 // Rate limiting with progressive blocking
-const loginAttempts = new Map<string, { 
-  count: number; 
-  resetAt: number; 
+const loginAttempts = new Map<string, {
+  count: number;
+  resetAt: number;
   blockedUntil?: number;
 }>();
 
-const MAX_ATTEMPTS = 5;
+const MAX_ATTEMPTS = 10;
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
-const BLOCK_DURATION_MS = 30 * 60 * 1000; // 30 minutes after max attempts
+const BLOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes after max attempts
 
 function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
   const now = Date.now();

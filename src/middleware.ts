@@ -3,37 +3,11 @@ import type { NextRequest } from "next/server";
 
 const ADMIN_SECRET_PATH = process.env.ADMIN_SECRET_PATH || "hadi-panel-x7k9";
 
-// Rate limiting store (in-memory, resets on server restart)
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX = 100; // 100 requests per minute
-
-// Login rate limiting store
+// Login rate limiting store (in-memory, resets on server restart)
 const loginAttempts = new Map<string, { count: number; resetAt: number; blockedUntil?: number }>();
-const LOGIN_MAX_ATTEMPTS = 5;
+const LOGIN_MAX_ATTEMPTS = 10;
 const LOGIN_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
-const LOGIN_BLOCK_DURATION_MS = 30 * 60 * 1000; // 30 minutes
-
-function getRateLimitKey(ip: string, path: string): string {
-  return `${ip}:${path}`;
-}
-
-function isRateLimited(key: string, max: number, window: number): boolean {
-  const now = Date.now();
-  const record = rateLimitStore.get(key);
-
-  if (!record || now > record.resetAt) {
-    rateLimitStore.set(key, { count: 1, resetAt: now + window });
-    return false;
-  }
-
-  if (record.count >= max) {
-    return true;
-  }
-
-  record.count++;
-  return false;
-}
+const LOGIN_BLOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
 function isLoginRateLimited(ip: string): { allowed: boolean; retryAfter?: number } {
   const now = Date.now();
@@ -83,25 +57,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Rate limiting for API routes
-  if (pathname.startsWith("/api/")) {
-    // Special rate limiting for login endpoint
-    if (pathname === "/api/auth" && request.method === "POST") {
-      const loginCheck = isLoginRateLimited(ip);
-      if (!loginCheck.allowed) {
-        return NextResponse.json(
-          { error: "تعداد تلاش‌های ناموفق زیاد بود. لطفاً بعداً تلاش کنید.", retryAfter: loginCheck.retryAfter },
-          { status: 429, headers: { "Retry-After": String(loginCheck.retryAfter) } }
-        );
-      }
-    }
-
-    // General API rate limiting
-    const key = getRateLimitKey(ip, "/api");
-    if (isRateLimited(key, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW)) {
+  // Rate limiting only for login endpoint (brute-force protection)
+  if (pathname === "/api/auth" && request.method === "POST") {
+    const loginCheck = isLoginRateLimited(ip);
+    if (!loginCheck.allowed) {
       return NextResponse.json(
-        { error: "Too many requests" },
-        { status: 429 }
+        { error: "تعداد تلاش‌های ناموفق زیاد بود. لطفاً بعداً تلاش کنید.", retryAfter: loginCheck.retryAfter },
+        { status: 429, headers: { "Retry-After": String(loginCheck.retryAfter) } }
       );
     }
   }
