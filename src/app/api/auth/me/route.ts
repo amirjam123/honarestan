@@ -1,14 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getAdminFromRequest } from "@/lib/auth";
-import { cookies } from "next/headers";
 
-export async function GET() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin_token")?.value;
-  console.log("[auth/me] cookie present:", !!token, "token length:", token?.length);
+export async function GET(request: NextRequest) {
+  const token = request.cookies.get("admin_token")?.value;
+  console.log("[auth/me] request cookie present:", !!token);
 
   const admin = await getAdminFromRequest();
-  console.log("[auth/me] admin:", admin ? admin.username : "null");
+  console.log("[auth/me] getAdminFromRequest:", admin ? admin.username : "null");
 
   if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
