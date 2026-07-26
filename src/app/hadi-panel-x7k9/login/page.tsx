@@ -28,7 +28,6 @@ export default function AdminLoginPage() {
 
       if (res.ok) {
         router.push(getAdminPath());
-        router.refresh();
       } else {
         setError(data.error || "نام کاربری یا رمز عبور اشتباه است");
       }
