@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import GlobalSearch from "@/components/admin/GlobalSearch";
 import { getAdminPath } from "@/lib/admin-config";
@@ -31,10 +30,12 @@ export default function AdminLayout({
           setAuthenticated(true);
         } else {
           setAuthenticated(false);
+          window.location.href = getAdminPath("/login");
         }
       })
       .catch(() => {
         setAuthenticated(false);
+        window.location.href = getAdminPath("/login");
       });
   }, [isLoginPage, pathname]);
 
@@ -44,7 +45,7 @@ export default function AdminLayout({
     return <>{children}</>;
   }
 
-  if (authenticated === null) {
+  if (authenticated === null || authenticated === false) {
     return (
       <div className="flex min-h-screen bg-slate-50 items-center justify-center">
         <div className="flex items-center gap-3 text-slate-500 text-sm">
@@ -58,22 +59,6 @@ export default function AdminLayout({
             <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
           </svg>
           <span>در حال بررسی احراز هویت...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (authenticated === false) {
-    return (
-      <div className="flex min-h-screen bg-slate-50 items-center justify-center">
-        <div className="text-center">
-          <p className="text-slate-600 text-sm mb-4">برای دسترسی به پنل مدیریت وارد شوید</p>
-          <Link
-            href={getAdminPath("/login")}
-            className="admin-btn-primary inline-flex items-center gap-2 text-xs"
-          >
-            ورود به پنل مدیریت
-          </Link>
         </div>
       </div>
     );

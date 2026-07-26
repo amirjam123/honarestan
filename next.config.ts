@@ -98,14 +98,7 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
-    return [
-      // Redirect /hadi-panel-x7k9 to /hadi-panel-x7k9/login
-      {
-        source: `/${ADMIN_SECRET_PATH}`,
-        destination: `/${ADMIN_SECRET_PATH}/login`,
-        permanent: false,
-      },
-    ];
+    return [];
   },
 };
 
