@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader } from "@/components/icons";
 import { getAdminPath } from "@/lib/admin-config";
 
@@ -10,7 +9,6 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,15 +25,17 @@ export default function AdminLoginPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push(getAdminPath());
-      } else {
-        setError(data.error || "نام کاربری یا رمز عبور اشتباه است");
-        setLoading(false);
+        // Force full page navigation — no client-side routing
+        window.location.replace(getAdminPath());
+        return; // Don't setLoading(false), page is navigating
       }
+
+      setError(data.error || "نام کاربری یا رمز عبور اشتباه است");
     } catch {
       setError("خطا در ورود به سیستم");
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   return (
