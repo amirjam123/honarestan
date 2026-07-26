@@ -25,9 +25,18 @@ export default function AdminLoginPage() {
       });
 
       const data = await res.json();
+      console.log("Login response:", res.status, data);
 
       if (res.ok) {
-        window.location.href = getAdminPath();
+        // Verify cookie works before redirecting
+        const meRes = await fetch("/api/auth/me");
+        console.log("Auth check:", meRes.status);
+        if (meRes.ok) {
+          window.location.href = getAdminPath();
+        } else {
+          setError("خطا در احراز هویت. لطفاً دوباره تلاش کنید.");
+          setLoading(false);
+        }
       } else {
         setError(data.error || "نام کاربری یا رمز عبور اشتباه است");
         setLoading(false);
