@@ -3,6 +3,7 @@ import { requireAdmin, hashPassword, verifyPassword } from "@/lib/auth";
 import { checkPasswordStrength, sanitizePassword } from "@/lib/password";
 import { logSecurityEvent, getClientIp } from "@/lib/security-logger";
 import { prisma } from "@/lib/prisma";
+import { syncPasswordInFiles } from "@/lib/sync-password";
 
 export async function POST(request: NextRequest) {
   try {
@@ -67,6 +68,9 @@ export async function POST(request: NextRequest) {
       where: { id: admin.userId },
       data: { passwordHash: newHash },
     });
+
+    // Sync password across project files
+    await syncPasswordInFiles(sanitizedCurrent, sanitizedNew);
 
     // Log password change
     await logSecurityEvent({
