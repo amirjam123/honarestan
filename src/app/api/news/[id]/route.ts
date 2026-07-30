@@ -24,7 +24,7 @@ export async function PUT(
     await requireAdmin();
     const { id } = await params;
     const body = await request.json();
-    const { title, content, excerpt, image, telegramFileId, published } = body;
+    const { title, content, excerpt, image, published } = body;
 
     const news = await prisma.news.update({
       where: { id },
@@ -33,7 +33,6 @@ export async function PUT(
         content,
         excerpt,
         image: image || null,
-        telegramFileId: telegramFileId || null,
         published,
       },
     });

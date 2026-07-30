@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   try {
     await requireAdmin();
     const body = await request.json();
-    const { title, content, excerpt, image, telegramFileId, published } = body;
+    const { title, content, excerpt, image, published } = body;
 
     let slug = slugify(title);
 
@@ -42,7 +42,6 @@ export async function POST(request: Request) {
         content,
         excerpt,
         image: image || null,
-        telegramFileId: telegramFileId || null,
         published: published || false,
       },
     });
