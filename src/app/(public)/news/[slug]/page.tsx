@@ -50,14 +50,34 @@ export default async function NewsDetailPage({
 }) {
   const resolvedParams = await params;
   const slug = String(resolvedParams.slug || "");
-  console.log("[News Detail] Looking up slug:", JSON.stringify(slug), "length:", slug.length);
+  console.log("[News Detail] slug:", JSON.stringify(slug), "hex:", Buffer.from(slug, "utf-8").toString("hex"));
 
   let news;
   try {
-    news = await prisma.news.findUnique({
-      where: { slug },
-    });
-    console.log("[News Detail] Found:", news ? JSON.stringify({ id: news.id, title: news.title, published: news.published, deletedAt: news.deletedAt, slug: news.slug }) : "null");
+    // Try findUnique first
+    news = await prisma.news.findUnique({ where: { slug } });
+    console.log("[News Detail] findUnique result:", news ? "FOUND" : "null");
+
+    // If not found, try findFirst (handles encoding edge cases)
+    if (!news) {
+      news = await prisma.news.findFirst({ where: { slug } });
+      console.log("[News Detail] findFirst result:", news ? "FOUND" : "null");
+    }
+
+    // If still not found, try raw query
+    if (!news) {
+      const raw = await prisma.$queryRaw`SELECT id, title, slug, published, "deletedAt" FROM "News" WHERE slug = ${slug}`;
+      console.log("[News Detail] raw query result:", JSON.stringify(raw));
+      if (Array.isArray(raw) && raw.length > 0) {
+        news = raw[0] as any;
+      }
+    }
+
+    // If STILL not found, try LIKE match to see what exists
+    if (!news) {
+      const allSlugs = await prisma.news.findMany({ select: { slug: true, title: true, published: true } });
+      console.log("[News Detail] All slugs in DB:", JSON.stringify(allSlugs));
+    }
   } catch (err) {
     console.error("[News Detail] DB error:", err);
     notFound();
