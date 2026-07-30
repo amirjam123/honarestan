@@ -17,11 +17,10 @@ export async function generateMetadata({
   const { slug } = await params;
   let news = null;
   try {
-    const allNews = await prisma.news.findMany({
-      where: { published: true, deletedAt: null },
-      select: { slug: true, title: true, excerpt: true, image: true },
-    });
-    news = allNews.find((n) => n.slug === slug) || null;
+    const results = await prisma.$queryRaw<
+      Array<{ slug: string; title: string; excerpt: string; image: string | null }>
+    >`SELECT slug, title, excerpt, image FROM "News" WHERE slug = ${slug} AND published = true AND "deletedAt" IS NULL LIMIT 1`;
+    news = results[0] || null;
   } catch {
     return {};
   }
@@ -58,11 +57,10 @@ export default async function NewsDetailPage({
 
   let news = null;
   try {
-    // Fetch ALL published news and match slug in code to avoid DB encoding issues
-    const allNews = await prisma.news.findMany({
-      where: { published: true, deletedAt: null },
-    });
-    news = allNews.find((n) => n.slug === slug) || null;
+    const results = await prisma.$queryRaw<
+      Array<{ id: string; title: string; slug: string; content: string; excerpt: string; image: string | null; published: boolean; createdAt: Date; updatedAt: Date; deletedAt: Date | null }>
+    >`SELECT * FROM "News" WHERE slug = ${slug} AND published = true AND "deletedAt" IS NULL LIMIT 1`;
+    news = results[0] || null;
   } catch {
     notFound();
   }
