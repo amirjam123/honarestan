@@ -4,6 +4,7 @@ import Hero from "@/components/ui/Hero";
 import JsonLd from "@/components/ui/JsonLd";
 import Link from "next/link";
 import { generateSeoMetadata, getSeoForPage, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, SITE_URL } from "@/lib/seo";
+import { sanitizeHtml } from "@/lib/validation";
 import { ArrowLeft, UserGroup, Globe } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 function renderMarkdown(text: string) {
-  return text
+  const html = text
     .split("\n")
     .map((line) => {
       const trimmed = line.trim();
@@ -25,6 +26,7 @@ function renderMarkdown(text: string) {
     })
     .filter(Boolean)
     .join("\n");
+  return sanitizeHtml(html);
 }
 
 export default async function AboutPage() {
@@ -51,7 +53,7 @@ export default async function AboutPage() {
         { name: "صفحه اصلی", url: SITE_URL },
         { name: "درباره ما", url: `${SITE_URL}/about` },
       ])} />
-      <Hero title="درباره هنرستان هادی" subtitle="آشنایی با تاریخچه و ارزش‌های ما" />
+      <Hero title="درباره هنرستان هادی" subtitle="آشنایی با تاریخچه و ارزش‌های ما" hideAbout />
 
       {/* Principal Welcome Message */}
       {principalProfile?.welcomeMessage && (
@@ -60,7 +62,7 @@ export default async function AboutPage() {
             <div className="flex flex-col md:flex-row items-center gap-8">
               {principalProfile.photo && (
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg flex-shrink-0">
-                  <img src={principalProfile.photo} alt={principalProfile.name} className="w-full h-full object-cover" />
+                  <img src={principalProfile.photo} alt={principalProfile.name} width={128} height={128} loading="lazy" className="w-full h-full object-cover" />
                 </div>
               )}
               <div className="text-center md:text-right">
@@ -157,7 +159,7 @@ export default async function AboutPage() {
               <div className="flex flex-col md:flex-row gap-8">
                 {principalProfile.photo && (
                   <div className="w-40 h-48 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 mx-auto md:mx-0">
-                    <img src={principalProfile.photo} alt={principalProfile.name} className="w-full h-full object-cover" />
+                    <img src={principalProfile.photo} alt={principalProfile.name} width={160} height={192} loading="lazy" className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div>
@@ -182,7 +184,7 @@ export default async function AboutPage() {
               <div key={teacher.id} className="bg-white rounded-xl border border-slate-200 p-6 text-center">
                 <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
                   {teacher.image ? (
-                    <img src={teacher.image} alt={teacher.name} loading="lazy" className="w-full h-full object-cover" />
+                    <img src={teacher.image} alt={teacher.name} width={80} height={80} loading="lazy" className="w-full h-full object-cover" />
                   ) : (
                     <UserGroup size={28} className="text-slate-400" />
                   )}

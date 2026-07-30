@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LocationMarker, Phone, Envelope, ArrowLeft } from "@/components/icons";
+import { getSettings } from "@/lib/settings-cache";
 
 export default function Footer() {
   const [schoolName, setSchoolName] = useState("هنرستان هادی");
@@ -14,16 +15,13 @@ export default function Footer() {
   });
 
   useEffect(() => {
-    fetch("/api/settings")
-      .then((res) => res.ok ? res.json() : {})
-      .then((data: Record<string, string>) => {
-        if (data["school_name"]) setSchoolName(data["school_name"]);
-        if (data["logo_url"]) setLogoUrl(data["logo_url"]);
-        if (data["address"]) setContactInfo(prev => ({ ...prev, address: data["address"] }));
-        if (data["phone"]) setContactInfo(prev => ({ ...prev, phone: data["phone"] }));
-        if (data["email"]) setContactInfo(prev => ({ ...prev, email: data["email"] }));
-      })
-      .catch(() => {});
+    getSettings().then((data) => {
+      if (data["school_name"]) setSchoolName(data["school_name"]);
+      if (data["logo_url"]) setLogoUrl(data["logo_url"]);
+      if (data["address"]) setContactInfo(prev => ({ ...prev, address: data["address"] }));
+      if (data["phone"]) setContactInfo(prev => ({ ...prev, phone: data["phone"] }));
+      if (data["email"]) setContactInfo(prev => ({ ...prev, email: data["email"] }));
+    });
   }, []);
 
   return (
@@ -56,7 +54,6 @@ export default function Footer() {
               {[
                 { href: "/about", label: "درباره ما" },
                 { href: "/teachers", label: "اساتید" },
-                { href: "/courses", label: "دوره‌ها" },
                 { href: "/gallery", label: "گالری تصاویر" },
                 { href: "/events", label: "رویدادها" },
               ].map((link) => (

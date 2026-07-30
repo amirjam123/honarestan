@@ -32,7 +32,6 @@ export async function GET(request: NextRequest) {
       news,
       teachers,
       gallery,
-      courses,
       studentWorks,
       messages,
       tickets,
@@ -100,28 +99,6 @@ export async function GET(request: NextRequest) {
           description: true,
           image: true,
           category: true,
-          createdAt: true,
-        },
-        orderBy: { createdAt: "desc" },
-        take: MAX_PER_TYPE,
-      }),
-
-      // Courses
-      prisma.course.findMany({
-        where: {
-          deletedAt: null,
-          OR: [
-            { title: where },
-            { description: where },
-            { level: where },
-          ],
-        },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          image: true,
-          level: true,
           createdAt: true,
         },
         orderBy: { createdAt: "desc" },
@@ -255,19 +232,6 @@ export async function GET(request: NextRequest) {
         excerpt: item.description || item.category,
         image: item.image,
         href: "/gallery",
-        createdAt: item.createdAt.toISOString(),
-      });
-    });
-
-    courses.forEach((item) => {
-      results.push({
-        id: item.id,
-        type: "courses",
-        typeLabel: "دوره‌ها",
-        title: item.title,
-        excerpt: item.level || stripHtml(item.description),
-        image: item.image,
-        href: "/courses",
         createdAt: item.createdAt.toISOString(),
       });
     });

@@ -6,6 +6,7 @@ import {
   LocationMarker, Phone, Envelope, CheckCircle, XCircle, Loader, Send,
   ChatBubble, Clock, ArrowLeft, Document,
 } from "@/components/icons";
+import { getSettings } from "@/lib/settings-cache";
 
 interface TicketMessage {
   id: string;
@@ -49,14 +50,11 @@ export default function ContactPage() {
   });
 
   useEffect(() => {
-    fetch("/api/settings")
-      .then((res) => res.ok ? res.json() : {})
-      .then((data: Record<string, string>) => {
-        if (data["address"]) setContactInfo(prev => ({ ...prev, address: data["address"] }));
-        if (data["phone"]) setContactInfo(prev => ({ ...prev, phone: data["phone"] }));
-        if (data["email"]) setContactInfo(prev => ({ ...prev, email: data["email"] }));
-      })
-      .catch(() => {});
+    getSettings().then((data) => {
+      if (data["address"]) setContactInfo(prev => ({ ...prev, address: data["address"] }));
+      if (data["phone"]) setContactInfo(prev => ({ ...prev, phone: data["phone"] }));
+      if (data["email"]) setContactInfo(prev => ({ ...prev, email: data["email"] }));
+    });
 
     // Restore saved email
     const savedEmail = localStorage.getItem("ticket_email");
@@ -189,7 +187,7 @@ export default function ContactPage() {
 
   return (
     <div>
-      <Hero title="پشتیبانی و ارتباط با ما" subtitle="ثبت درخواست و پیگیری تیکت‌های پشتیبانی" />
+      <Hero title="پشتیبانی و ارتباط با ما" subtitle="ثبت درخواست و پیگیری تیکت‌های پشتیبانی" hideContact />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
           {/* Sidebar */}

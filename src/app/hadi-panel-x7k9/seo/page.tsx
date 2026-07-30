@@ -40,7 +40,6 @@ const PAGE_LABELS: Record<string, string> = {
   "/gallery": "گالری",
   "/news": "اخبار",
   "/contact": "تماس با ما",
-  "/courses": "دوره‌ها",
   "/events": "رویدادها",
   "/teachers": "اساتید",
   "/student-works": "آثار هنرجویان",

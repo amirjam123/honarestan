@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
+    await requireAdmin();
     const [settings, teacherCount, courseCount, newsCount, schoolProfile, principalProfile] = await Promise.all([
       prisma.siteSetting.findMany(),
       prisma.teacher.count({ where: { deletedAt: null } }),
@@ -47,7 +49,11 @@ export async function GET() {
       totalSteps,
       progress: Math.round((completedCount / totalSteps) * 100),
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "خطا";
+    if (message === "Unauthorized") {
+      return NextResponse.json({ error: "غیرمجاز" }, { status: 401 });
+    }
     console.error("Error checking setup status:", error);
     return NextResponse.json(
       { error: "خطا در بررسی وضعیت راه‌اندازی" },

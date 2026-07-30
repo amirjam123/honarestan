@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { generateSeoMetadata, generateLocalBusinessJsonLd, generateBreadcrumbJsonLd, generateWebPageJsonLd, SITE_URL } from "@/lib/seo";
 import JsonLd from "@/components/ui/JsonLd";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   return generateSeoMetadata("/contact");
 }

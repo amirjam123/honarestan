@@ -5,9 +5,11 @@ interface HeroProps {
   title: string;
   subtitle?: string;
   backgroundImage?: string;
+  hideContact?: boolean;
+  hideAbout?: boolean;
 }
 
-export default function Hero({ title, subtitle, backgroundImage }: HeroProps) {
+export default function Hero({ title, subtitle, backgroundImage, hideContact, hideAbout }: HeroProps) {
   return (
     <section className="relative overflow-hidden bg-[#0c1929]">
       {/* Background */}
@@ -29,19 +31,23 @@ export default function Hero({ title, subtitle, backgroundImage }: HeroProps) {
             <p className="text-base sm:text-lg text-slate-300 mb-8 leading-8 font-light">{subtitle}</p>
           )}
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-7 py-3 bg-white text-[#0c1929] rounded-lg font-semibold text-sm hover:bg-slate-50 transition-colors"
-            >
-              تماس با ما
-              <ArrowLeft size={16} />
-            </Link>
-            <Link
-              href="/about"
-              className="inline-flex items-center gap-2 px-7 py-3 border border-slate-500 text-slate-200 rounded-lg font-semibold text-sm hover:bg-white/5 transition-colors"
-            >
-              درباره ما
-            </Link>
+            {!hideContact && (
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 px-7 py-3 bg-white text-[#0c1929] rounded-lg font-semibold text-sm hover:bg-slate-50 transition-colors"
+              >
+                تماس با ما
+                <ArrowLeft size={16} />
+              </Link>
+            )}
+            {!hideAbout && (
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 px-7 py-3 border border-slate-500 text-slate-200 rounded-lg font-semibold text-sm hover:bg-white/5 transition-colors"
+              >
+                درباره ما
+              </Link>
+            )}
           </div>
         </div>
       </div>

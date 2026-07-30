@@ -36,7 +36,7 @@ export default async function TeachersPage() {
               <div key={teacher.id} className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 text-center p-6">
                 <div className="w-28 h-28 mx-auto mb-5 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border-[3px] border-white shadow-sm">
                   {teacher.image ? (
-                    <img src={teacher.image} alt={teacher.name} loading="lazy" className="w-full h-full object-cover" />
+                    <img src={teacher.image} alt={teacher.name} width={112} height={112} loading="lazy" className="w-full h-full object-cover" />
                   ) : (
                     <UserGroup size={36} className="text-slate-400" />
                   )}

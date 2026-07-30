@@ -95,6 +95,9 @@ export default async function NewsDetailPage({
             <img
               src={news.image}
               alt={news.title}
+              width={1200}
+              height={675}
+              fetchPriority="high"
               className="w-full h-full object-cover"
             />
           </div>

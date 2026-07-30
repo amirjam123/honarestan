@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Loader, XMark, Megaphone, Photo, UserGroup, AcademicCap, PaintBrush, Envelope, ChatBubble, Document, Clock, ArrowLeft } from "@/components/icons";
+import { Search, Loader, XMark, Megaphone, Photo, UserGroup, PaintBrush, Envelope, ChatBubble, Document, Clock, ArrowLeft } from "@/components/icons";
 import { getAdminPath } from "@/lib/admin-config";
 
 interface SearchResult {
@@ -25,7 +25,6 @@ const TYPE_CONFIG: Record<string, { icon: typeof Megaphone; color: string; bg: s
   news: { icon: Megaphone, color: "text-blue-500", bg: "bg-blue-500/10" },
   teachers: { icon: UserGroup, color: "text-amber-500", bg: "bg-amber-500/10" },
   gallery: { icon: Photo, color: "text-emerald-500", bg: "bg-emerald-500/10" },
-  courses: { icon: AcademicCap, color: "text-violet-500", bg: "bg-violet-500/10" },
   "student-works": { icon: PaintBrush, color: "text-pink-500", bg: "bg-pink-500/10" },
   messages: { icon: Envelope, color: "text-teal-500", bg: "bg-teal-500/10" },
   tickets: { icon: ChatBubble, color: "text-cyan-500", bg: "bg-cyan-500/10" },

@@ -4,11 +4,16 @@ import { requireAdmin } from "@/lib/auth";
 
 export async function GET() {
   try {
+    await requireAdmin();
     const seoSettings = await prisma.seoSetting.findMany({
       orderBy: { pagePath: "asc" },
     });
     return NextResponse.json(seoSettings);
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "خطا";
+    if (message === "Unauthorized") {
+      return NextResponse.json({ error: "غیرمجاز" }, { status: 401 });
+    }
     console.error("Error fetching SEO settings:", error);
     return NextResponse.json(
       { error: "خطا در دریافت تنظیمات SEO" },

@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bars3, XMark } from "@/components/icons";
+import { getSettings } from "@/lib/settings-cache";
 
 const navLinks = [
   { href: "/", label: "خانه" },
   { href: "/about", label: "درباره ما" },
   { href: "/teachers", label: "اساتید" },
-  { href: "/courses", label: "دوره‌ها" },
   { href: "/gallery", label: "گالری" },
   { href: "/news", label: "اخبار" },
   { href: "/events", label: "رویدادها" },
@@ -39,13 +39,10 @@ export default function Header() {
   }, [mobileOpen]);
 
   useEffect(() => {
-    fetch("/api/settings")
-      .then((res) => res.ok ? res.json() : {})
-      .then((data: Record<string, string>) => {
-        if (data["school_name"]) setSchoolName(data["school_name"]);
-        if (data["logo_url"]) setLogoUrl(data["logo_url"]);
-      })
-      .catch(() => {});
+    getSettings().then((data) => {
+      if (data["school_name"]) setSchoolName(data["school_name"]);
+      if (data["logo_url"]) setLogoUrl(data["logo_url"]);
+    });
   }, []);
 
   return (

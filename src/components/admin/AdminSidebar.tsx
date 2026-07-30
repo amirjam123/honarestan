@@ -9,6 +9,7 @@ import {
   ChatBubble, Bars3, XMark, ArrowLeftOnRectangle, Lock, Trash, Globe, Sparkles,
 } from "@/components/icons";
 import { getAdminPath } from "@/lib/admin-config";
+import { getSettings } from "@/lib/settings-cache";
 
 const adminLinks = [
   { href: "", label: "داشبورد", icon: Chart },
@@ -40,12 +41,9 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   const [schoolName, setSchoolName] = useState("هنرستان هادی");
 
   useEffect(() => {
-    fetch("/api/settings")
-      .then((res) => (res.ok ? res.json() : {}))
-      .then((data: Record<string, string>) => {
-        if (data["school_name"]) setSchoolName(data["school_name"]);
-      })
-      .catch(() => {});
+    getSettings().then((data) => {
+      if (data["school_name"]) setSchoolName(data["school_name"]);
+    });
   }, []);
 
   useEffect(() => {

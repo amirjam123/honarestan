@@ -1,5 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import { Vazirmatn } from "next/font/google";
 import "./globals.css";
+
+const vazir = Vazirmatn({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-vazir",
+  preload: true,
+});
 
 export const metadata: Metadata = {
   title: {
@@ -50,20 +59,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" className="h-full antialiased">
+    <html lang="fa" dir="rtl" className={`h-full antialiased ${vazir.variable}`}>
       <head>
         <meta name="theme-color" content="#2563eb" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap"
-        />
       </head>
       <body className="min-h-full flex flex-col font-[family-name:var(--font-vazir)]">
         <a href="#main-content" className="skip-to-content">
