@@ -14,8 +14,11 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const resolvedParams = await params;
+  const slug = String(resolvedParams.slug || "");
+  console.log("[News Metadata] Looking up slug:", JSON.stringify(slug));
   const news = await prisma.news.findUnique({ where: { slug }, select: { title: true, excerpt: true, image: true, deletedAt: true } });
+  console.log("[News Metadata] Found:", news ? JSON.stringify({ title: news.title, deletedAt: news.deletedAt }) : "null");
   if (!news || news.deletedAt) return {};
   const seo = await getSeoForPage(`/news/${slug}`);
   const canonical = seo.canonicalUrl || `${SITE_URL}/news/${slug}`;
@@ -45,15 +48,16 @@ export default async function NewsDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  console.log("[News Detail] Looking up slug:", slug);
+  const resolvedParams = await params;
+  const slug = String(resolvedParams.slug || "");
+  console.log("[News Detail] Looking up slug:", JSON.stringify(slug), "length:", slug.length);
 
   let news;
   try {
     news = await prisma.news.findUnique({
       where: { slug },
     });
-    console.log("[News Detail] Found:", news ? { id: news.id, title: news.title, published: news.published, deletedAt: news.deletedAt, slug: news.slug } : null);
+    console.log("[News Detail] Found:", news ? JSON.stringify({ id: news.id, title: news.title, published: news.published, deletedAt: news.deletedAt, slug: news.slug }) : "null");
   } catch (err) {
     console.error("[News Detail] DB error:", err);
     notFound();
