@@ -46,9 +46,18 @@ export default async function NewsDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const news = await prisma.news.findUnique({
-    where: { slug },
-  });
+  console.log("[News Detail] Looking up slug:", slug);
+
+  let news;
+  try {
+    news = await prisma.news.findUnique({
+      where: { slug },
+    });
+    console.log("[News Detail] Found:", news ? { id: news.id, title: news.title, published: news.published, deletedAt: news.deletedAt, slug: news.slug } : null);
+  } catch (err) {
+    console.error("[News Detail] DB error:", err);
+    notFound();
+  }
 
   if (!news || !news.published || news.deletedAt) notFound();
 

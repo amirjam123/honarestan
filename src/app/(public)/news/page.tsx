@@ -22,6 +22,8 @@ export default async function NewsPage() {
     getSeoForPage("/news"),
   ]);
 
+  console.log("[News List] Found", news.length, "articles. Slugs:", news.map(n => n.slug));
+
   return (
     <div>
       <JsonLd data={generateWebPageJsonLd("/news", "اخبار هنرستان هادی", "آخرین اخبار و اطلاعیه‌های هنرستان هادی")} />
