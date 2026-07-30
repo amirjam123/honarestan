@@ -17,14 +17,15 @@ export async function generateMetadata({
   const { slug } = await params;
   let news = null;
   try {
-    news = await prisma.news.findFirst({
-      where: { slug },
-      select: { title: true, excerpt: true, image: true, deletedAt: true },
+    const allNews = await prisma.news.findMany({
+      where: { published: true, deletedAt: null },
+      select: { slug: true, title: true, excerpt: true, image: true },
     });
+    news = allNews.find((n) => n.slug === slug) || null;
   } catch {
     return {};
   }
-  if (!news || news.deletedAt) return {};
+  if (!news) return {};
   const seo = await getSeoForPage(`/news/${slug}`);
   const canonical = seo.canonicalUrl || `${SITE_URL}/news/${slug}`;
   const ogImage = news.image || `${SITE_URL}/og-default.png`;
@@ -57,12 +58,16 @@ export default async function NewsDetailPage({
 
   let news = null;
   try {
-    news = await prisma.news.findFirst({ where: { slug } });
+    // Fetch ALL published news and match slug in code to avoid DB encoding issues
+    const allNews = await prisma.news.findMany({
+      where: { published: true, deletedAt: null },
+    });
+    news = allNews.find((n) => n.slug === slug) || null;
   } catch {
     notFound();
   }
 
-  if (!news || !news.published || news.deletedAt) notFound();
+  if (!news) notFound();
 
   const seo = await getSeoForPage(`/news/${slug}`);
 
