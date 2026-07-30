@@ -26,7 +26,7 @@ Full-stack dynamic website for "هنرستان هادی" (Hadi Art School) in Ir
 - **CSS import order**: `@import "tailwindcss"` must come after any font imports in globals.css
 - **Dynamic rendering**: All Prisma-backed pages need `export const dynamic = "force-dynamic"`
 - **No libvips**: `images.unoptimized: true` in next.config.ts
-- **Environment variables**: `DATABASE_URL` (Neon PostgreSQL), `JWT_SECRET` (JWT signing), `ADMIN_SECRET_PATH` (admin URL path)
+- **Environment variables**: `DATABASE_URL` (Neon PostgreSQL), `JWT_SECRET` (JWT signing), `ADMIN_SECRET_PATH` (admin URL path), `TELEGRAM_BOT_TOKEN` (Telegram Bot API token), `TELEGRAM_CHAT_ID` (Telegram channel/chat ID for image storage)
 
 ## Rules
 - All content in Persian (Farsi), RTL layout
