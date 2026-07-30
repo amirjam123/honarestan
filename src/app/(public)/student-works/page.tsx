@@ -4,6 +4,7 @@ import Hero from "@/components/ui/Hero";
 import JsonLd from "@/components/ui/JsonLd";
 import { generateSeoMetadata, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, getSeoForPage, SITE_URL } from "@/lib/seo";
 import { Photo, Sparkles } from "@/components/icons";
+import ImageLightbox from "@/components/ui/ImageLightbox";
 
 export const dynamic = "force-dynamic";
 
@@ -64,12 +65,14 @@ export default async function StudentWorksPage() {
               <div key={work.id} className="group bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md hover:border-slate-300 transition-all duration-300">
                 <div className="aspect-square bg-slate-100 relative overflow-hidden">
                   {work.image ? (
-                    <img
-                      src={work.image}
-                      alt={work.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                    <ImageLightbox src={work.image} alt={work.title}>
+                      <img
+                        src={work.image}
+                        alt={work.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </ImageLightbox>
                   ) : (
                     <div className="flex items-center justify-center h-full">
                       <Photo size={36} className="text-slate-300" />

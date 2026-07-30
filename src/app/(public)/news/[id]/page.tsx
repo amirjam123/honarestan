@@ -6,6 +6,7 @@ import Link from "next/link";
 import JsonLd from "@/components/ui/JsonLd";
 import { generateSeoMetadata, getSeoForPage, generateBreadcrumbJsonLd, generateWebPageJsonLd, generateJsonLd, SITE_URL } from "@/lib/seo";
 import { ArrowLeft, Calendar } from "@/components/icons";
+import ImageLightbox from "@/components/ui/ImageLightbox";
 
 export const dynamic = "force-dynamic";
 
@@ -102,16 +103,18 @@ export default async function NewsDetailPage({
 
       <article className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         {news.image && (
-          <div className="aspect-[16/9] bg-slate-100">
-            <img
-              src={news.image}
-              alt={news.title}
-              width={1200}
-              height={675}
-              fetchPriority="high"
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <ImageLightbox src={news.image} alt={news.title}>
+            <div className="aspect-[16/9] bg-slate-100">
+              <img
+                src={news.image}
+                alt={news.title}
+                width={1200}
+                height={675}
+                fetchPriority="high"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </ImageLightbox>
         )}
         <div className="p-6 lg:p-10">
           <div className="flex items-center gap-1.5 text-slate-400 text-xs mb-4">

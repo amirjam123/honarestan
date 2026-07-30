@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import Hero from "@/components/ui/Hero";
 import NewsCard from "@/components/ui/NewsCard";
 import JsonLd from "@/components/ui/JsonLd";
+import ImageLightbox from "@/components/ui/ImageLightbox";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
@@ -175,7 +176,9 @@ async function StudentWorksSection() {
             <div key={work.id} className="group bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col">
               <div className="aspect-square bg-slate-100 relative overflow-hidden">
                 {work.image ? (
-                  <img src={work.image} alt={work.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <ImageLightbox src={work.image} alt={work.title}>
+                    <img src={work.image} alt={work.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </ImageLightbox>
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <Photo size={32} className="text-slate-300" />
@@ -278,7 +281,9 @@ async function GalleryPreviewSection() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {galleryItems.map((item) => (
               <div key={item.id} className="aspect-square rounded-lg overflow-hidden bg-slate-200 group">
-                <img src={item.image} alt={item.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <ImageLightbox src={item.image} alt={item.title}>
+                  <img src={item.image} alt={item.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                </ImageLightbox>
               </div>
             ))}
           </div>
