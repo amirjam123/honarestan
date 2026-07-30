@@ -14,11 +14,16 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const resolvedParams = await params;
-  const slug = String(resolvedParams.slug || "");
-  console.log("[News Metadata] Looking up slug:", JSON.stringify(slug));
-  const news = await prisma.news.findUnique({ where: { slug }, select: { title: true, excerpt: true, image: true, deletedAt: true } });
-  console.log("[News Metadata] Found:", news ? JSON.stringify({ title: news.title, deletedAt: news.deletedAt }) : "null");
+  const { slug } = await params;
+  let news = null;
+  try {
+    news = await prisma.news.findFirst({
+      where: { slug },
+      select: { title: true, excerpt: true, image: true, deletedAt: true },
+    });
+  } catch {
+    return {};
+  }
   if (!news || news.deletedAt) return {};
   const seo = await getSeoForPage(`/news/${slug}`);
   const canonical = seo.canonicalUrl || `${SITE_URL}/news/${slug}`;
@@ -48,38 +53,12 @@ export default async function NewsDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const resolvedParams = await params;
-  const slug = String(resolvedParams.slug || "");
-  console.log("[News Detail] slug:", JSON.stringify(slug), "hex:", Buffer.from(slug, "utf-8").toString("hex"));
+  const { slug } = await params;
 
-  let news;
+  let news = null;
   try {
-    // Try findUnique first
-    news = await prisma.news.findUnique({ where: { slug } });
-    console.log("[News Detail] findUnique result:", news ? "FOUND" : "null");
-
-    // If not found, try findFirst (handles encoding edge cases)
-    if (!news) {
-      news = await prisma.news.findFirst({ where: { slug } });
-      console.log("[News Detail] findFirst result:", news ? "FOUND" : "null");
-    }
-
-    // If still not found, try raw query
-    if (!news) {
-      const raw = await prisma.$queryRaw`SELECT id, title, slug, published, "deletedAt" FROM "News" WHERE slug = ${slug}`;
-      console.log("[News Detail] raw query result:", JSON.stringify(raw));
-      if (Array.isArray(raw) && raw.length > 0) {
-        news = raw[0] as any;
-      }
-    }
-
-    // If STILL not found, try LIKE match to see what exists
-    if (!news) {
-      const allSlugs = await prisma.news.findMany({ select: { slug: true, title: true, published: true } });
-      console.log("[News Detail] All slugs in DB:", JSON.stringify(allSlugs));
-    }
-  } catch (err) {
-    console.error("[News Detail] DB error:", err);
+    news = await prisma.news.findFirst({ where: { slug } });
+  } catch {
     notFound();
   }
 
