@@ -17,11 +17,11 @@ export default async function sitemap() {
 
   const news = await prisma.news.findMany({
     where: { published: true, deletedAt: null },
-    select: { slug: true, updatedAt: true },
+    select: { id: true, updatedAt: true },
   });
 
   const newsPages = news.map((item) => ({
-    url: `${SITE_URL}/news/${item.slug}`,
+    url: `${SITE_URL}/news/${item.id}`,
     lastModified: item.updatedAt,
     changeFrequency: "weekly" as const,
     priority: 0.6,

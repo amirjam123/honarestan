@@ -231,11 +231,11 @@ async function NewsSection() {
           {news.map((item) => (
             <NewsCard
               key={item.id}
+              id={item.id}
               title={item.title}
               excerpt={item.excerpt}
               image={item.image}
               date={formatDate(item.createdAt)}
-              slug={item.slug}
             />
           ))}
         </div>

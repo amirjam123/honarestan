@@ -12,21 +12,21 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { id } = await params;
   let news = null;
   try {
-    const results = await prisma.$queryRaw<
-      Array<{ slug: string; title: string; excerpt: string; image: string | null }>
-    >`SELECT slug, title, excerpt, image FROM "News" WHERE slug = ${slug} AND published = true AND "deletedAt" IS NULL LIMIT 1`;
-    news = results[0] || null;
+    news = await prisma.news.findFirst({
+      where: { id, published: true, deletedAt: null },
+      select: { title: true, excerpt: true, image: true },
+    });
   } catch {
     return {};
   }
   if (!news) return {};
-  const seo = await getSeoForPage(`/news/${slug}`);
-  const canonical = seo.canonicalUrl || `${SITE_URL}/news/${slug}`;
+  const seo = await getSeoForPage(`/news/${id}`);
+  const canonical = seo.canonicalUrl || `${SITE_URL}/news/${id}`;
   const ogImage = news.image || `${SITE_URL}/og-default.png`;
   return {
     title: seo.metaTitle || news.title,
@@ -51,28 +51,24 @@ export async function generateMetadata({
 export default async function NewsDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const { slug } = await params;
+  const { id } = await params;
 
   let news = null;
   try {
-    const results = await prisma.$queryRaw<
-      Array<{ id: string; title: string; slug: string; content: string; excerpt: string; image: string | null; published: boolean; createdAt: Date; updatedAt: Date; deletedAt: Date | null }>
-    >`SELECT * FROM "News" WHERE slug = ${slug} AND published = true AND "deletedAt" IS NULL LIMIT 1`;
-    news = results[0] || null;
+    news = await prisma.news.findFirst({
+      where: { id, published: true, deletedAt: null },
+    });
   } catch {
     notFound();
   }
 
   if (!news) notFound();
 
-  const seo = await getSeoForPage(`/news/${slug}`);
-
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-      <JsonLd data={generateWebPageJsonLd(`/news/${slug}`, news.title, news.excerpt || news.title)} />
-      {generateJsonLd(`/news/${slug}`, seo) && <JsonLd data={generateJsonLd(`/news/${slug}`, seo)!} />}
+      <JsonLd data={generateWebPageJsonLd(`/news/${id}`, news.title, news.excerpt || news.title)} />
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "NewsArticle",
@@ -88,13 +84,13 @@ export default async function NewsDetailPage({
           "@id": `${SITE_URL}#organization`,
           logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.svg` },
         },
-        mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/news/${slug}#webpage` },
+        mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/news/${id}#webpage` },
         inLanguage: "fa",
       }} />
       <JsonLd data={generateBreadcrumbJsonLd([
         { name: "صفحه اصلی", url: SITE_URL },
         { name: "اخبار", url: `${SITE_URL}/news` },
-        { name: news.title, url: `${SITE_URL}/news/${slug}` },
+        { name: news.title, url: `${SITE_URL}/news/${id}` },
       ])} />
       <Link
         href="/news"

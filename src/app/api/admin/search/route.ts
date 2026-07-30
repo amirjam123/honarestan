@@ -205,7 +205,7 @@ export async function GET(request: NextRequest) {
         title: item.title,
         excerpt: item.excerpt || stripHtml(item.title),
         image: item.image,
-        href: `/news/${item.slug}`,
+        href: `/news/${item.id}`,
         createdAt: item.createdAt.toISOString(),
       });
     });

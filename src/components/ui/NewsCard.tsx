@@ -6,13 +6,13 @@ interface NewsCardProps {
   excerpt: string;
   image?: string | null;
   date: string;
-  slug: string;
+  id: string;
 }
 
-export default function NewsCard({ title, excerpt, image, date, slug }: NewsCardProps) {
+export default function NewsCard({ title, excerpt, image, date, id }: NewsCardProps) {
   return (
     <Link
-      href={`/news/${slug}`}
+      href={`/news/${id}`}
       className="group block bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg hover:border-slate-300 transition-all duration-300"
     >
       <div className="aspect-[16/10] bg-slate-100 relative overflow-hidden">
