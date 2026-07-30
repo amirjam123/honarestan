@@ -15,8 +15,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const news = await prisma.news.findFirst({ where: { slug, deletedAt: null }, select: { title: true, excerpt: true, image: true } });
-  if (!news) return {};
+  const news = await prisma.news.findUnique({ where: { slug }, select: { title: true, excerpt: true, image: true, deletedAt: true } });
+  if (!news || news.deletedAt) return {};
   const seo = await getSeoForPage(`/news/${slug}`);
   const canonical = seo.canonicalUrl || `${SITE_URL}/news/${slug}`;
   const ogImage = news.image || `${SITE_URL}/og-default.png`;
@@ -46,11 +46,11 @@ export default async function NewsDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const news = await prisma.news.findFirst({
-    where: { slug, deletedAt: null },
+  const news = await prisma.news.findUnique({
+    where: { slug },
   });
 
-  if (!news || !news.published) notFound();
+  if (!news || !news.published || news.deletedAt) notFound();
 
   const seo = await getSeoForPage(`/news/${slug}`);
 
