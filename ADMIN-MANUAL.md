@@ -243,7 +243,7 @@ After submission:
 3. Click "ورود"
 4. You will be redirected to the dashboard
 
-**Default credentials:** Username: `honarestan`, Password: `@hadiplmmlp`
+**Default credentials:** Username: `honarestan`, Password: `Hadi1234`
 
 **Important:** Change the default password immediately after first login.
 

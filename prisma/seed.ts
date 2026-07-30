@@ -13,11 +13,11 @@ async function main() {
 
   const existingAdmin = await prisma.adminUser.findFirst();
   if (!existingAdmin) {
-    const hash = await bcrypt.hash("@hadiplmmlp", 12);
+    const hash = await bcrypt.hash("Hadi1234", 12);
     await prisma.adminUser.create({
       data: { username: "honarestan", passwordHash: hash },
     });
-    console.log("Admin user created (honarestan / @hadiplmmlp)");
+    console.log("Admin user created (honarestan / Hadi1234)");
   }
 
   const settings = [

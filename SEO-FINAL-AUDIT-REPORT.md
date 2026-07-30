@@ -482,7 +482,7 @@ Sitemap: https://honarestan-hadi.ir/sitemap.xml
 - [ ] **Remove `.env` from git history** and move secrets to Vercel environment variables
 - [ ] **Set a strong JWT_SECRET** (minimum 32 characters, cryptographically random)
 - [ ] **Set ADMIN_SECRET_PATH** to a non-guessable value in production
-- [ ] **Change default admin password** from `@hadiplmmlp`
+- [ ] **Change default admin password** from `Hadi1234`
 
 ### Post-Deployment (SEO)
 

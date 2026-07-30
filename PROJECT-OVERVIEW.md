@@ -265,7 +265,7 @@ honarestan-main (2)/
 - **Password Hashing**: bcryptjs with salt rounds of 12
 - **Token Expiry**: 8 hours
 - **JWT Secret**: Environment variable `JWT_SECRET` or auto-generated fallback
-- **Default Credentials**: Username `honarestan`, Password `@hadiplmmlp` (set in seed.ts)
+- **Default Credentials**: Username `honarestan`, Password `Hadi1234` (set in seed.ts)
 - **Auth Flow**: Login → set cookie → middleware checks cookie on admin routes
 
 ---
@@ -310,7 +310,7 @@ honarestan-main (2)/
 
 The seed script (`prisma/seed.ts`) creates:
 
-1. **Admin User**: `honarestan` / `@hadiplmmlp`
+1. **Admin User**: `honarestan` / `Hadi1234`
 2. **Site Settings**: school name, hero title/subtitle, address, phone, email
 3. **About Page**: Default content with markdown formatting
 4. **Teachers** (3): Sample faculty members

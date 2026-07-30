@@ -31,7 +31,7 @@
 
 ## Admin Panel
 - URL: `/hadi-panel-x7k9/login`
-- Default credentials: `honarestan` / `@hadiplmmlp`
+- Default credentials: `honarestan` / `Hadi1234`
 - Features:
   - Dashboard with content counts
   - CRUD for news, gallery, teachers, courses, events, student works

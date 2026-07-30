@@ -14,7 +14,7 @@ Full-stack dynamic website for "هنرستان هادی" (Hadi Art School) in Ir
 - **Database Host**: Neon (serverless PostgreSQL)
 - **Language**: Entire site in Persian (Farsi) with RTL layout
 - **Admin CMS**: `/hadi-panel-x7k9` — manage news, gallery, teachers, courses, events, student works, pages, settings, messages, tickets
-- **Default login**: `honarestan` / `@hadiplmmlp`
+- **Default login**: `honarestan` / `Hadi1234`
 
 ## First Thing To Do In Any Session
 1. Read `PROJECT-DOCS.md` for full project status

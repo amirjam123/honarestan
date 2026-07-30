@@ -583,7 +583,7 @@ export default function SetupWizardPage() {
             <div className="space-y-4 max-w-md mt-4">
               <p className="text-xs text-slate-500 mb-4">
                 رمز عبور پیش‌‌فرض (
-                <code className="bg-slate-100 px-1.5 py-0.5 rounded text-[11px]">@hadiplmmlp</code>
+                <code className="bg-slate-100 px-1.5 py-0.5 rounded text-[11px]">Hadi1234</code>
                 ) را به رمزی امن تغییر دهید.
               </p>
               <div>
