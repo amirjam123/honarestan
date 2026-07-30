@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Pencil, Trash } from "@/components/icons";
 import ExcelImport from "@/components/admin/ExcelImport";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 interface NewsItem {
   id: string;
@@ -11,6 +12,7 @@ interface NewsItem {
   content: string;
   excerpt: string;
   image: string | null;
+  telegramFileId: string | null;
   published: boolean;
   createdAt: string;
 }
@@ -19,7 +21,9 @@ export default function AdminNewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", content: "", excerpt: "", image: "", published: false });
+  const [form, setForm] = useState({ title: "", content: "", excerpt: "", image: "", telegramFileId: "", published: false });
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const fetchNews = useCallback(async () => {
     const res = await fetch("/api/news");
@@ -30,15 +34,35 @@ export default function AdminNewsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = editingId ? `/api/news/${editingId}` : "/api/news";
-    const method = editingId ? "PUT" : "POST";
-    await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
-    resetForm();
-    fetchNews();
+    setSubmitError(null);
+    setSubmitting(true);
+    try {
+      const url = editingId ? `/api/news/${editingId}` : "/api/news";
+      const method = editingId ? "PUT" : "POST";
+      const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data.error || "خطا در ذخیره‌سازی");
+        return;
+      }
+      resetForm();
+      fetchNews();
+    } catch {
+      setSubmitError("خطا در اتصال به سرور");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleEdit = (item: NewsItem) => {
-    setForm({ title: item.title, content: item.content, excerpt: item.excerpt, image: item.image || "", published: item.published });
+    setForm({
+      title: item.title,
+      content: item.content,
+      excerpt: item.excerpt,
+      image: item.image || "",
+      telegramFileId: item.telegramFileId || "",
+      published: item.published,
+    });
     setEditingId(item.id);
     setShowForm(true);
   };
@@ -50,9 +74,10 @@ export default function AdminNewsPage() {
   };
 
   const resetForm = () => {
-    setForm({ title: "", content: "", excerpt: "", image: "", published: false });
+    setForm({ title: "", content: "", excerpt: "", image: "", telegramFileId: "", published: false });
     setEditingId(null);
     setShowForm(false);
+    setSubmitError(null);
   };
 
   return (
@@ -83,16 +108,21 @@ export default function AdminNewsPage() {
               <label className="block text-xs font-medium text-slate-600 mb-1.5">متن کامل خبر</label>
               <textarea rows={6} required value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} className="admin-input resize-none" />
             </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1.5">آدرس تصویر (URL)</label>
-              <input type="text" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="admin-input" />
-            </div>
+            <ImageUpload
+              value={form.image}
+              telegramFileId={form.telegramFileId}
+              onChange={(url, fileId) => setForm({ ...form, image: url, telegramFileId: fileId || "" })}
+              label="تصویر خبر"
+            />
             <div className="flex items-center gap-2">
               <input type="checkbox" id="published" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} className="w-4 h-4 rounded" />
               <label htmlFor="published" className="text-xs text-slate-600">منتشر شده</label>
             </div>
+            {submitError && <p className="text-xs text-red-500">{submitError}</p>}
             <div className="flex gap-3">
-              <button type="submit" className="admin-btn-primary">{editingId ? "ذخیره تغییرات" : "ایجاد خبر"}</button>
+              <button type="submit" disabled={submitting} className="admin-btn-primary disabled:opacity-50">
+                {submitting ? "در حال ذخیره..." : editingId ? "ذخیره تغییرات" : "ایجاد خبر"}
+              </button>
               <button type="button" onClick={resetForm} className="admin-btn-secondary">انصراف</button>
             </div>
           </form>

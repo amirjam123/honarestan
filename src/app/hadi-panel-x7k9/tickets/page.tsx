@@ -1,10 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   ChatBubble, Clock, Search, Loader, Send, ArrowLeft,
-  CheckCircle, RefreshCw, XCircle, Filter,
+  CheckCircle, RefreshCw, XCircle, Filter, Photo, Upload,
 } from "@/components/icons";
+
+interface TicketAttachment {
+  id: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+  url: string;
+  telegramFileId: string;
+}
 
 interface TicketMessage {
   id: string;
@@ -12,6 +21,7 @@ interface TicketMessage {
   senderType: string;
   senderName: string;
   createdAt: string;
+  attachments: TicketAttachment[];
 }
 
 interface Ticket {
@@ -33,6 +43,9 @@ export default function AdminTicketsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [replyMessage, setReplyMessage] = useState("");
   const [replyStatus, setReplyStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [pendingAttachments, setPendingAttachments] = useState<{ fileId: string; url: string; filename: string; mimeType: string; size: number }[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const fetchTickets = useCallback(async () => {
     setLoading(true);
@@ -69,19 +82,48 @@ export default function AdminTicketsPage() {
     fetchTickets();
   }, [fetchTickets]);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload/telegram", { method: "POST", body: formData });
+      const data = await res.json();
+      if (res.ok) {
+        setPendingAttachments((prev) => [...prev, { fileId: data.fileId, url: data.url, filename: file.name, mimeType: file.type, size: file.size }]);
+      }
+    } catch {
+      // Silent fail
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  const removeAttachment = (index: number) => {
+    setPendingAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleReply = async (ticketId: string) => {
-    if (!replyMessage.trim()) return;
+    if (!replyMessage.trim() && pendingAttachments.length === 0) return;
     setReplyStatus("loading");
 
     try {
       const res = await fetch(`/api/admin/tickets/${ticketId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: replyMessage }),
+        body: JSON.stringify({
+          message: replyMessage,
+          attachments: pendingAttachments.map((a) => ({ fileId: a.fileId, url: a.url, filename: a.filename, mimeType: a.mimeType, size: a.size })),
+        }),
       });
 
       if (res.ok) {
         setReplyMessage("");
+        setPendingAttachments([]);
         setReplyStatus("idle");
         fetchTicketDetail(ticketId);
         fetchTickets();
@@ -284,7 +326,20 @@ export default function AdminTicketsPage() {
                           {formatDate(msg.createdAt)}
                         </span>
                       </div>
-                      <p className="text-sm text-slate-700 leading-6 whitespace-pre-wrap">{msg.message}</p>
+                      {msg.message && <p className="text-sm text-slate-700 leading-6 whitespace-pre-wrap">{msg.message}</p>}
+                      {msg.attachments && msg.attachments.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {msg.attachments.map((att) => (
+                            <a key={att.id} href={att.url} target="_blank" rel="noopener noreferrer" className="block">
+                              {att.mimeType.startsWith("image/") ? (
+                                <img src={att.url} alt={att.filename} className="max-w-[200px] max-h-[200px] rounded-lg object-cover" />
+                              ) : (
+                                <span className="text-xs text-primary-600 underline">{att.filename}</span>
+                              )}
+                            </a>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -293,6 +348,16 @@ export default function AdminTicketsPage() {
               {/* Reply Form */}
               {selectedTicket.status !== "closed" && (
                 <div className="admin-card">
+                  {pendingAttachments.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {pendingAttachments.map((att, i) => (
+                        <div key={i} className="relative group">
+                          <img src={att.url} alt="" className="w-16 h-16 rounded-lg object-cover" />
+                          <button onClick={() => removeAttachment(i)} className="absolute -top-1 -left-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] flex items-center justify-center">x</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <textarea
                     value={replyMessage}
                     onChange={(e) => setReplyMessage(e.target.value)}
@@ -301,10 +366,16 @@ export default function AdminTicketsPage() {
                     className="admin-input resize-none mb-3"
                   />
                   <div className="flex items-center justify-between">
-                    {replyStatus === "error" && (
-                      <span className="text-red-600 text-xs">خطا در ارسال پاسخ</span>
-                    )}
-                    <div className="flex gap-2 mr-auto">
+                    <div className="flex items-center gap-2">
+                      <input ref={fileRef} type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                      <button onClick={() => fileRef.current?.click()} disabled={uploading} className="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors" aria-label="آپلود تصویر">
+                        {uploading ? <Loader size={16} className="animate-spin" /> : <Photo size={16} />}
+                      </button>
+                      {replyStatus === "error" && (
+                        <span className="text-red-600 text-xs">خطا در ارسال پاسخ</span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
                       <button
                         onClick={() => handleStatusChange(selectedTicket.id, "close")}
                         className="admin-btn-secondary flex items-center gap-1.5"
@@ -314,7 +385,7 @@ export default function AdminTicketsPage() {
                       </button>
                       <button
                         onClick={() => handleReply(selectedTicket.id)}
-                        disabled={!replyMessage.trim() || replyStatus === "loading"}
+                        disabled={(!replyMessage.trim() && pendingAttachments.length === 0) || replyStatus === "loading"}
                         className="admin-btn-primary flex items-center gap-2 disabled:opacity-50"
                       >
                         {replyStatus === "loading" ? (

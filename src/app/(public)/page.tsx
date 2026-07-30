@@ -104,7 +104,7 @@ async function PrincipalSection() {
 
 async function TeachersSection() {
   const teachers = await prisma.teacher.findMany({
-    where: { published: true },
+    where: { published: true, deletedAt: null },
     orderBy: { sortOrder: "asc" },
     take: 4,
   });
@@ -154,7 +154,7 @@ async function TeachersSection() {
 
 async function StudentWorksSection() {
   const studentWorks = await prisma.studentWork.findMany({
-    where: { published: true, featured: true },
+    where: { published: true, featured: true, deletedAt: null },
     orderBy: { createdAt: "desc" },
     take: 4,
   });
@@ -213,7 +213,7 @@ async function StudentWorksSection() {
 
 async function NewsSection() {
   const news = await prisma.news.findMany({
-    where: { published: true },
+    where: { published: true, deletedAt: null },
     orderBy: { createdAt: "desc" },
     take: 3,
   });
@@ -259,6 +259,7 @@ async function NewsSection() {
 
 async function GalleryPreviewSection() {
   const galleryItems = await prisma.gallery.findMany({
+    where: { deletedAt: null },
     orderBy: { createdAt: "desc" },
     take: 6,
   });

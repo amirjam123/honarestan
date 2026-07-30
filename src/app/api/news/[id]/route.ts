@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const news = await prisma.news.findUnique({ where: { id } });
+    const news = await prisma.news.findFirst({ where: { id, deletedAt: null } });
     if (!news) return NextResponse.json({ error: "Not found" }, { status: 404 });
     return NextResponse.json(news);
   } catch {
@@ -24,11 +24,18 @@ export async function PUT(
     await requireAdmin();
     const { id } = await params;
     const body = await request.json();
-    const { title, content, excerpt, image, published } = body;
+    const { title, content, excerpt, image, telegramFileId, published } = body;
 
     const news = await prisma.news.update({
       where: { id },
-      data: { title, content, excerpt, image: image || null, published },
+      data: {
+        title,
+        content,
+        excerpt,
+        image: image || null,
+        telegramFileId: telegramFileId || null,
+        published,
+      },
     });
 
     return NextResponse.json(news);

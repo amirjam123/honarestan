@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+interface AttachmentInput {
+  fileId: string;
+  url: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -8,11 +16,18 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { message, senderType, senderName, email } = body;
+    const { message, senderType, senderName, email, attachments } = body;
 
-    if (!message || !senderType || !senderName) {
+    if (!message && (!attachments || attachments.length === 0)) {
       return NextResponse.json(
-        { error: "Message and sender info required" },
+        { error: "Message or attachment required" },
+        { status: 400 }
+      );
+    }
+
+    if (!senderType || !senderName) {
+      return NextResponse.json(
+        { error: "Sender info required" },
         { status: 400 }
       );
     }
@@ -39,10 +54,20 @@ export async function POST(
     const newMessage = await prisma.ticketMessage.create({
       data: {
         ticketId: id,
-        message,
+        message: message || "",
         senderType,
         senderName,
+        attachments: attachments?.length > 0 ? {
+          create: (attachments as AttachmentInput[]).map((a) => ({
+            filename: a.filename,
+            mimeType: a.mimeType,
+            size: a.size,
+            telegramFileId: a.fileId,
+            url: a.url,
+          })),
+        } : undefined,
       },
+      include: { attachments: true },
     });
 
     // Update ticket status

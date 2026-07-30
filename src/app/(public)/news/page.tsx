@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function NewsPage() {
   const [news, seo] = await Promise.all([
     prisma.news.findMany({
-      where: { published: true },
+      where: { published: true, deletedAt: null },
       orderBy: { createdAt: "desc" },
     }),
     getSeoForPage("/news"),

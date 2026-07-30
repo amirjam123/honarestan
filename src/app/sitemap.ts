@@ -16,7 +16,7 @@ export default async function sitemap() {
   ];
 
   const news = await prisma.news.findMany({
-    where: { published: true },
+    where: { published: true, deletedAt: null },
     select: { slug: true, updatedAt: true },
   });
 

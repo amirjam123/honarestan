@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const item = await prisma.gallery.findUnique({ where: { id } });
+    const item = await prisma.gallery.findFirst({ where: { id, deletedAt: null } });
     if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
     return NextResponse.json(item);
   } catch {
@@ -41,13 +41,16 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireAdmin();
+    const admin = await requireAdmin();
     const { id } = await params;
-    await prisma.gallery.delete({ where: { id } });
+    await prisma.gallery.update({
+      where: { id },
+      data: { deletedAt: new Date(), deletedBy: admin.username },
+    });
     return NextResponse.json({ success: true });
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized") {

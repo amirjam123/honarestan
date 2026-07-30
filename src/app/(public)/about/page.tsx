@@ -35,7 +35,7 @@ export default async function AboutPage() {
     prisma.principalProfile.findFirst({ where: { published: true } }),
     prisma.page.findUnique({ where: { slug: "about" } }),
     prisma.teacher.findMany({
-      where: { published: true },
+      where: { published: true, deletedAt: null },
       orderBy: { sortOrder: "asc" },
       take: 3,
     }),

@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Hero from "@/components/ui/Hero";
 import {
   LocationMarker, Phone, Envelope, CheckCircle, XCircle, Loader, Send,
-  ChatBubble, Clock, ArrowLeft, Document,
+  ChatBubble, Clock, ArrowLeft, Document, Photo,
 } from "@/components/icons";
 import { getSettings } from "@/lib/settings-cache";
+
+interface TicketAttachment {
+  id: string;
+  filename: string;
+  mimeType: string;
+  url: string;
+}
 
 interface TicketMessage {
   id: string;
@@ -14,6 +21,7 @@ interface TicketMessage {
   senderType: string;
   senderName: string;
   createdAt: string;
+  attachments: TicketAttachment[];
 }
 
 interface Ticket {
@@ -43,6 +51,9 @@ export default function ContactPage() {
   const [replyMessage, setReplyMessage] = useState("");
   const [replyStatus, setReplyStatus] = useState<"idle" | "loading" | "error">("idle");
   const [loadingTickets, setLoadingTickets] = useState(false);
+  const [pendingAttachments, setPendingAttachments] = useState<{ fileId: string; url: string; filename: string; mimeType: string; size: number }[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [contactInfo, setContactInfo] = useState({
     address: "تهران، خیابان نمونه، کوچه نمونه، پلاک ۱۲۳",
     phone: "۰۲۱-۱۲۳۴۵۶۷۸",
@@ -124,8 +135,27 @@ export default function ContactPage() {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload/telegram", { method: "POST", body: fd });
+      const data = await res.json();
+      if (res.ok) {
+        setPendingAttachments((prev) => [...prev, { fileId: data.fileId, url: data.url, filename: file.name, mimeType: file.type, size: file.size }]);
+      }
+    } catch { /* silent */ }
+    finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
   const handleReply = async (ticketId: string) => {
-    if (!replyMessage.trim()) return;
+    if (!replyMessage.trim() && pendingAttachments.length === 0) return;
     setReplyStatus("loading");
 
     try {
@@ -137,11 +167,13 @@ export default function ContactPage() {
           senderType: "user",
           senderName: formData.name || "کاربر",
           email: formData.email,
+          attachments: pendingAttachments.map((a) => ({ fileId: a.fileId, url: a.url, filename: a.filename, mimeType: a.mimeType, size: a.size })),
         }),
       });
 
       if (res.ok) {
         setReplyMessage("");
+        setPendingAttachments([]);
         setReplyStatus("idle");
         fetchTicketDetail(ticketId);
       } else {
@@ -468,7 +500,20 @@ export default function ContactPage() {
                             {formatDate(msg.createdAt)}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-700 leading-6 whitespace-pre-wrap">{msg.message}</p>
+                        {msg.message && <p className="text-sm text-slate-700 leading-6 whitespace-pre-wrap">{msg.message}</p>}
+                        {msg.attachments && msg.attachments.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {msg.attachments.map((att) => (
+                              <a key={att.id} href={att.url} target="_blank" rel="noopener noreferrer">
+                                {att.mimeType?.startsWith("image/") ? (
+                                  <img src={att.url} alt={att.filename} className="max-w-[200px] max-h-[200px] rounded-lg object-cover" />
+                                ) : (
+                                  <span className="text-xs text-primary-600 underline">{att.filename}</span>
+                                )}
+                              </a>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -477,6 +522,16 @@ export default function ContactPage() {
                 {/* Reply Form */}
                 {selectedTicket.status !== "closed" ? (
                   <div className="bg-white rounded-xl border border-slate-200 p-5">
+                    {pendingAttachments.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {pendingAttachments.map((att, i) => (
+                          <div key={i} className="relative group">
+                            <img src={att.url} alt="" className="w-16 h-16 rounded-lg object-cover" />
+                            <button onClick={() => setPendingAttachments((p) => p.filter((_, j) => j !== i))} className="absolute -top-1 -left-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] flex items-center justify-center">x</button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     <textarea
                       value={replyMessage}
                       onChange={(e) => setReplyMessage(e.target.value)}
@@ -485,12 +540,18 @@ export default function ContactPage() {
                       className="admin-input resize-none mb-3"
                     />
                     <div className="flex items-center justify-between">
-                      {replyStatus === "error" && (
-                        <span className="text-red-600 text-xs">خطا در ارسال پاسخ</span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <input ref={fileRef} type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                        <button onClick={() => fileRef.current?.click()} disabled={uploading} className="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors" aria-label="آپلود تصویر">
+                          {uploading ? <Loader size={16} className="animate-spin" /> : <Photo size={16} />}
+                        </button>
+                        {replyStatus === "error" && (
+                          <span className="text-red-600 text-xs">خطا در ارسال پاسخ</span>
+                        )}
+                      </div>
                       <button
                         onClick={() => handleReply(selectedTicket.id)}
-                        disabled={!replyMessage.trim() || replyStatus === "loading"}
+                        disabled={(!replyMessage.trim() && pendingAttachments.length === 0) || replyStatus === "loading"}
                         className="admin-btn-primary flex items-center gap-2 disabled:opacity-50"
                       >
                         {replyStatus === "loading" ? (

@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function StudentWorksPage() {
   const [works, seo] = await Promise.all([
     prisma.studentWork.findMany({
-      where: { published: true },
+      where: { published: true, deletedAt: null },
       orderBy: { createdAt: "desc" },
     }),
     getSeoForPage("/student-works"),

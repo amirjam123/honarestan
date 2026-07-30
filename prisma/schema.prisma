@@ -8,17 +8,18 @@ datasource db {
 }
 
 model News {
-  id        String    @id @default(cuid())
-  title     String
-  slug      String    @unique
-  content   String
-  excerpt   String
-  image     String?
-  published Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  deletedBy String?
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  content        String
+  excerpt        String
+  image          String?
+  telegramFileId String?
+  published      Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+  deletedBy      String?
 }
 
 model Gallery {
@@ -193,6 +194,19 @@ model TicketMessage {
   senderType  String   // "user" or "admin"
   senderName  String
   createdAt   DateTime @default(now())
+  attachments TicketAttachment[]
+}
+
+model TicketAttachment {
+  id              String   @id @default(cuid())
+  messageId       String
+  message         TicketMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  filename        String
+  mimeType        String
+  size            Int
+  telegramFileId  String
+  url             String
+  createdAt       DateTime @default(now())
 }
 
 model SecurityLog {

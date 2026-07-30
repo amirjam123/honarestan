@@ -15,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function GalleryPage() {
   const [items, seo] = await Promise.all([
     prisma.gallery.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
     }),
     getSeoForPage("/gallery"),

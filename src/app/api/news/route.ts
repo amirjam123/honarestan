@@ -19,11 +19,32 @@ export async function POST(request: Request) {
   try {
     await requireAdmin();
     const body = await request.json();
-    const { title, content, excerpt, image, published } = body;
+    const { title, content, excerpt, image, telegramFileId, published } = body;
 
-    const slug = slugify(title);
+    let slug = slugify(title);
+
+    // Handle duplicate slugs by appending a counter
+    const existing = await prisma.news.findUnique({ where: { slug } });
+    if (existing) {
+      let counter = 2;
+      let newSlug = `${slug}-${counter}`;
+      while (await prisma.news.findUnique({ where: { slug: newSlug } })) {
+        counter++;
+        newSlug = `${slug}-${counter}`;
+      }
+      slug = newSlug;
+    }
+
     const news = await prisma.news.create({
-      data: { title, slug, content, excerpt, image: image || null, published: published || false },
+      data: {
+        title,
+        slug,
+        content,
+        excerpt,
+        image: image || null,
+        telegramFileId: telegramFileId || null,
+        published: published || false,
+      },
     });
 
     return NextResponse.json(news, { status: 201 });
@@ -31,6 +52,7 @@ export async function POST(request: Request) {
     if (error instanceof Error && error.message === "Unauthorized") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    console.error("News creation error:", error);
     return NextResponse.json({ error: "Failed to create news" }, { status: 500 });
   }
 }
