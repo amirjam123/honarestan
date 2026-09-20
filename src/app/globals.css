@@ -30,6 +30,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   direction: rtl;
   text-align: right;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .skip-to-content {
