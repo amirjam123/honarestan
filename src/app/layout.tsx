@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="ltr" className={`h-full antialiased ${vazir.variable}`}>
+    <html lang="fa" dir="rtl" className={`h-full antialiased ${vazir.variable}`}>
       <head>
         <meta name="theme-color" content="#2563eb" />
       </head>

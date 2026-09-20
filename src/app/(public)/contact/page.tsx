@@ -50,6 +50,8 @@ export default function ContactPage() {
   });
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollLeft = 0;
     getSettings().then((data) => {
       if (data["address"]) setContactInfo(prev => ({ ...prev, address: data["address"] }));
       if (data["phone"]) setContactInfo(prev => ({ ...prev, phone: data["phone"] }));
