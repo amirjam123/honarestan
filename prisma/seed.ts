@@ -24,9 +24,9 @@ async function main() {
     { key: "school_name", value: "هنرستان هادی" },
     { key: "hero_title", value: "هنرستان هادی" },
     { key: "hero_subtitle", value: "" },
-    { key: "address", value: "تهران، خیابان نمونه، کوچه نمونه، پلاک ۱۲۳" },
-    { key: "phone", value: "۰۲۱-۱۲۳۴۵۶۷۸" },
-    { key: "email", value: "info@honarestan-hadi.ir" },
+    { key: "address", value: "شهرستان پردیس , جاجرود , روستای خسرو اباد , خیابان سد لتیان , کوچه بوستان " },
+    { key: "phone", value: "۰۲۱-۷۶۲۰۱۳۵۰" },
+    { key: "email", value: "HonarestanHadi@gmail.com" },
   ];
 
   for (const setting of settings) {
@@ -44,7 +44,7 @@ async function main() {
     create: {
       slug: "about",
       title: "درباره ما",
-      content: `## درباره هنرستان هادی\n\nهنرستان هادی با هدف ارتقای سطح آموزش هنرهای زیبا و صنایع خلاق تاسیس شده است.\n\n### ماموریت ما\n\nارائه آموزش‌های با کیفیت در زمینه هنرهای زیبا.\n\n### ارزش‌های ما\n\n- **کیفیت آموزشی**\n- **خلاقیت**\n- **اخلاق حرفه‌ای**\n- **تعامل**`,
+      content: `## درباره هنرستان هادی\n\nهنرستان هادی با هدف ارتقای سطح آموزش دانش اموزان تاسیس شده است.\n\n### ماموریت ما\n\nارائه آموزش‌های با کیفیت در زمینه هنرهای زیبا.\n\n### ارزش‌های ما\n\n- **کیفیت آموزشی**\n- **خلاقیت**\n- **اخلاق حرفه‌ای**\n- **تعامل**`,
     },
   });
   console.log("About page created");
@@ -53,8 +53,8 @@ async function main() {
   const existingTeachers = await prisma.teacher.count();
   if (existingTeachers === 0) {
     const teachers = [
-      { name: "استاد محمدی", title: "مدیر هنرستان", bio: "با بیش از ۲۰ سال تجربه در آموزش هنرهای زیبا", specialty: "نقاشی و طراحی", sortOrder: 1 },
-      { name: "استاد رضایی", title: "معاون آموزشی", bio: "متخصص در هنرهای تجسمی و مجسمه‌سازی", specialty: "مجسمه‌سازی", sortOrder: 2 },
+      { name: "دکتر امیری", title: "مدیر هنرستان", bio: "با بیش از ۲۰ سال تجربه در آموزش هنرهای زیبا", specialty: "نقاشی و طراحی", sortOrder: 1 },
+      { name: "استاد رضا", title: "معاون آموزشی", bio: "متخصص در هنرهای تجسمی و مجسمه‌سازی", specialty: "مجسمه‌سازی", sortOrder: 2 },
       { name: "استاد کریمی", title: "مدرس خوشنویسی", bio: "دارای مدرک درجه یک هنری در خوشنویسی", specialty: "خوشنویسی", sortOrder: 3 },
     ];
     for (const teacher of teachers) {
@@ -67,11 +67,8 @@ async function main() {
   const existingCourses = await prisma.course.count();
   if (existingCourses === 0) {
     const courses = [
-      { title: "نقاشی و طراحی", description: "آموزش تکنیک‌های مختلف نقاشی شامل آبرنگ، رنگ روغن و اکریلیک. از مبتدی تا پیشرفته.", duration: "۲ سال", level: "beginner", sortOrder: 1 },
-      { title: "خوشنویسی", description: "آموزش خط نستعلیق، شکسته و نسخ با اساتید برجسته کشور.", duration: "۱ سال", level: "beginner", sortOrder: 2 },
-      { title: "مجسمه‌سازی", description: "کار با مواد مختلف شامل گچ، سفال، فلز و چوب برای خلق آثار حجمی.", duration: "۲ سال", level: "intermediate", sortOrder: 3 },
-      { title: "گرافیک دیجیتال", description: "آموزش نرم‌افزارهای گرافیکی شامل فتوشاپ، ایلوستریتور و ایندیزاین.", duration: "۱ سال", level: "beginner", sortOrder: 4 },
-      { title: "عکاسی", description: "تکنیک‌های عکاسی حرفه‌ای، نورپردازی و ویرایش تصویر.", duration: "۶ ماه", level: "beginner", sortOrder: 5 },
+      { title: "شبکه و نرم افزار", description: "آموزش مفاهیم پایه شبکه و نرم افزارهای کاربردی.", duration: "۲ سال", level: "beginner", sortOrder: 1 },
+      { title: "حسابداری", description: "آموزش مفاهیم پایه حسابداری و نرم افزارهای مرتبط.", duration: "۱ سال", level: "beginner", sortOrder: 2 },
     ];
     for (const course of courses) {
       await prisma.course.create({ data: course });
@@ -100,13 +97,12 @@ async function main() {
     create: {
       id: "singleton",
       overview: "",
-      history: "هنرستان هادی در سال ۱۳۷۰ با هدف ارتقای سطح آموزش هنرهای زیبا تأسیس شد.",
+      history: "",
       vision: "",
       mission: "",
       educationalGoals: "پرورش خلاقیت، توسعه مهارت‌های فنی، و آماده‌سازی دانش‌آموزان برای ورود به بازار کار.",
-      departments: "نقاشی و طراحی، خوشنویسی، مجسمه‌سازی، گرافیک دیجیتال، عکاسی",
-      facilities: "کارگاه‌های مجهز، گالری نمایشگاهی، کتابخانه تخصصی، آزمایشگاه دیجیتال",
-      statistics: '{"students": 250, "teachers": 15, "courses": 10, "graduates": 1200}',
+      departments: " حسابداری و شبکه و نرم افزار",
+      facilities: "کارگاه‌های مجهز، گالری نمایشگاهی، کتابخانه تخصصی، ",
       additionalInfo: "برای کسب اطلاعات بیشتر با ما تماس بگیرید.",
     },
   });
@@ -118,12 +114,12 @@ async function main() {
     update: {},
     create: {
       id: "singleton",
-      name: "جناب آقای محمدی",
+      name: "جناب آقای امیری",
       position: "مدیر هنرستان",
-      biography: "با بیش از ۲۰ سال تجربه در آموزش هنرهای زیبا و مدیریت آموزشی.",
+      biography: "",
       welcomeMessage: "به هنرستان هادی خوش آمدید. ما متعهد به پرورش استعدادهای هنری نسل آینده هستیم.",
-      resume: "کارشناسی ارشد هنرهای زیبا، دانشگاه تهران",
-      achievements: '["کسب مقام اول جشنواره هنرهای تجسمی", "انتشار ۵ کتاب آموزشی", "۲۰ سال سابقه تدریس"]',
+      resume: "",
+      achievements: '',
     },
   });
   console.log("PrincipalProfile seeded");
@@ -132,14 +128,14 @@ async function main() {
   const seoSettings = [
     {
       pagePath: "/",
-      metaTitle: "هنرستان هادی | مرکز آموزش هنرهای زیبا",
-      metaDescription: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق. آموزش نقاشی، مجسمه‌سازی، خوشنویسی، عکاسی و گرافیک با بهترین اساتید.",
+      metaTitle: "هنرستان فنی حرفه ای هادی",
+      metaDescription: "هنرستان فنی و حرفه ای هادی دارای دو رشته حسابداری و شبکه و نرم افزار .",
       robots: "index, follow",
     },
     {
       pagePath: "/about",
       metaTitle: "درباره ما | هنرستان هادی",
-      metaDescription: "آشنایی با تاریخچه، ارزش‌ها و اهداف هنرستان هادی. مرکز آموزش هنرهای زیبا در تهران با بیش از ۳۰ سال سابقه.",
+      metaDescription: "آشنایی با تاریخچه، ارزش‌ها و اهداف هنرستان هادی.",
       robots: "index, follow",
     },
     {
@@ -163,7 +159,7 @@ async function main() {
     {
       pagePath: "/courses",
       metaTitle: "دوره‌های آموزشی | هنرستان هادی",
-      metaDescription: "دوره‌های آموزشی هنرستان هادی. نقاشی، خوشنویسی، مجسمه‌سازی، گرافیک و عکاسی.",
+      metaDescription: "دوره‌های آموزشی هنرستان هادی در زمینه های خدمات و صنعت.",
       robots: "index, follow",
     },
     {
