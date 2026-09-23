@@ -44,9 +44,9 @@ export default function ContactPage() {
   const [replyStatus, setReplyStatus] = useState<"idle" | "loading" | "error">("idle");
   const [loadingTickets, setLoadingTickets] = useState(false);
   const [contactInfo, setContactInfo] = useState({
-    address: "تهران، خیابان نمونه، کوچه نمونه، پلاک ۱۲۳",
-    phone: "۰۲۱-۱۲۳۴۵۶۷۸",
-    email: "info@honarestan-hadi.ir",
+    address: "شهرستان پردیس , جاجرود , روستای خسرو اباد , خیابان سد لتیان , کوچه بوستان",
+    phone: "۰۲۱-۷۶۲۰۱۳۵۰",
+    email: "HonarestanHadi@gmail.com",
   });
 
   useEffect(() => {
