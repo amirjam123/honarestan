@@ -24,13 +24,13 @@ export default async function NewsPage() {
 
   return (
     <div>
-      <JsonLd data={generateWebPageJsonLd("/news", "اخبار هنرستان هادی", "آخرین اخبار و اطلاعیه‌های هنرستان هادی")} />
+      <JsonLd data={generateWebPageJsonLd("/news", "اخبار هنرستان فنی حرفه ای هادی", "آخرین اخبار و اطلاعیه‌های هنرستان فنی حرفه ای هادی")} />
       {generateJsonLd("/news", seo) && <JsonLd data={generateJsonLd("/news", seo)!} />}
       <JsonLd data={generateBreadcrumbJsonLd([
         { name: "صفحه اصلی", url: SITE_URL },
         { name: "اخبار", url: `${SITE_URL}/news` },
       ])} />
-      <Hero title="اخبار و اطلاعیه‌ها" subtitle="آخرین اخبار و رویدادهای هنرستان هادی" />
+      <Hero title="اخبار و اطلاعیه‌ها" subtitle="آخرین اخبار و اطلاعیه‌های هنرستان فنی حرفه ای هادی" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {news.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

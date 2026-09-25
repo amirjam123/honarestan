@@ -25,13 +25,13 @@ export default async function GalleryPage() {
 
   return (
     <div>
-      <JsonLd data={generateWebPageJsonLd("/gallery", "گالری تصاویر هنرستان هادی", "گالری تصاویر هنرستان هادی. مشاهده آثار هنری هنرجویان و اساتید.")} />
+      <JsonLd data={generateWebPageJsonLd("/gallery", "گالری تصاویر هنرستان فنی حرفه ای هادی", "تصاویر هنرستان فنی حرفه ای هادی.")} />
       {generateJsonLd("/gallery", seo) && <JsonLd data={generateJsonLd("/gallery", seo)!} />}
       <JsonLd data={generateBreadcrumbJsonLd([
         { name: "صفحه اصلی", url: SITE_URL },
         { name: "گالری تصاویر", url: `${SITE_URL}/gallery` },
       ])} />
-      <Hero title="گالری تصاویر" subtitle="نمایش آثار هنری و تصاویر هنرستان" />
+      <Hero title="گالری تصاویر" subtitle="تصاویر هنرستان فنی حرفه ای هادی" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {items.length > 0 ? (
           <>

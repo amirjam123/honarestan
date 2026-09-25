@@ -27,8 +27,7 @@ export async function generateMetadata({
   }
   if (!news) return {};
   const seo = await getSeoForPage(`/news/${id}`);
-  const canonical = seo.canonicalUrl || `${SITE_URL}/news/${id}`;
-  const ogImage = news.image || `${SITE_URL}/og-default.png`;
+  const canonical = seo.canonicalUrl || `${SITE_URL}/news/${id}`;  const ogImage = news.image || seo.ogImage || seo.twitterImage;
   return {
     title: seo.metaTitle || news.title,
     description: seo.metaDescription || news.excerpt,
@@ -38,13 +37,13 @@ export async function generateMetadata({
       description: seo.ogDescription || news.excerpt,
       url: canonical,
       type: "article" as const,
-      images: news.image ? [{ url: news.image, width: 1200, height: 630, alt: news.title }] : undefined,
+      images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: news.title }] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: seo.twitterTitle || seo.ogTitle || news.title,
       description: seo.twitterDescription || seo.ogDescription || news.excerpt,
-      images: [seo.twitterImage || ogImage],
+      ...(ogImage ? { images: [ogImage] } : {}),
     },
   };
 }

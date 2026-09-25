@@ -35,13 +35,13 @@ export default async function StudentWorksPage() {
 
   return (
     <div>
-      <JsonLd data={generateWebPageJsonLd("/student-works", "آثار هنرجویان هنرستان هادی", "آثار هنری خلق شده توسط هنرجویان هنرستان هادی.")} />
+      <JsonLd data={generateWebPageJsonLd("/student-works", "آثار هنرجویان هنرستان فنی حرفه ای هادی", "آثار هنرجویان هنرستان فنی حرفه ای هادی.")} />
       {generateJsonLd("/student-works", seo) && <JsonLd data={generateJsonLd("/student-works", seo)!} />}
       <JsonLd data={generateBreadcrumbJsonLd([
         { name: "صفحه اصلی", url: SITE_URL },
         { name: "آثار هنرجویان", url: `${SITE_URL}/student-works` },
       ])} />
-      <Hero title="آثار هنرجویان" subtitle="نمایش آثار هنری خلق شده توسط هنرجویان مستعد هنرستان هادی" />
+      <Hero title="آثار هنرجویان" subtitle="نمایش آثار هنرجویان هنرستان فنی حرفه ای هادی" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {categories.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-8 justify-center">

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
+import { uploadToCloudinary } from "@/lib/storage";
 import path from "path";
 import { logSecurityEvent, getClientIp } from "@/lib/security-logger";
 
@@ -22,18 +22,6 @@ function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
     if (buffer[i] !== expectedBytes[i]) return false;
   }
   return true;
-}
-
-function sanitizeFilename(filename: string): string {
-  // Remove path separators and null bytes
-  const sanitized = filename
-    .replace(/[/\\]/g, "")
-    .replace(/\0/g, "")
-    .replace(/\.\./g, "")
-    .trim();
-  
-  // Only allow alphanumeric, hyphens, underscores, and dots
-  return sanitized.replace(/[^a-zA-Z0-9\-_.]/g, "_");
 }
 
 export async function POST(request: NextRequest) {
@@ -97,24 +85,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const sanitizedFilename = sanitizeFilename(file.name);
-    const filename = `${uniqueSuffix}${ext}`;
-    const filepath = path.join(uploadDir, filename);
-
-    await writeFile(filepath, buffer);
+    const result = await uploadToCloudinary(buffer, file.name, file.type);
 
     await logSecurityEvent({
       event: "file_upload",
       ip,
-      details: `Uploaded: ${sanitizedFilename} (${file.size} bytes)`,
+      details: `Uploaded to Cloudinary: ${file.name} (${file.size} bytes)`,
       path: "/api/upload",
     });
 
-    return NextResponse.json({ url: `/uploads/${filename}` }, { status: 201 });
+    return NextResponse.json({ url: result.url }, { status: 201 });
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

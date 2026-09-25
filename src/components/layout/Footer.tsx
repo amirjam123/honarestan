@@ -6,12 +6,12 @@ import { LocationMarker, Phone, Envelope, ArrowLeft } from "@/components/icons";
 import { getSettings } from "@/lib/settings-cache";
 
 export default function Footer() {
-  const [schoolName, setSchoolName] = useState("هنرستان هادی");
+  const [schoolName, setSchoolName] = useState("هنرستان فنی حرفه ای هادی");
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [contactInfo, setContactInfo] = useState({
-    address: "تهران، خیابان نمونه، کوچه نمونه، پلاک ۱۲۳",
-    phone: "021-12345678",
-    email: "info@honarestan-hadi.ir",
+    address: "جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان",
+    phone: "02176201350",
+    email: "HonarestanHadi@gmail.com",
   });
 
   useEffect(() => {

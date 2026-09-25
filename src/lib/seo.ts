@@ -1,10 +1,31 @@
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://honarestan-hadi.ir";
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://honarestan-hadi.ir"
+).replace(/\/+$/, "");
 
-const ORG_ID = `${SITE_URL}#organization`;
+const ORG_ID = `${SITE_URL}#school`;
 const SITE_ID = `${SITE_URL}#website`;
+
+/**
+ * اطلاعات قطعی و تأییدشده هنرستان.
+ * هیچ مقداری (سال تأسیس، سابقه، آمار، سوابق) بدون تأیید اضافه نمی‌شود.
+ */
+export const SCHOOL = {
+  name: "هنرستان فنی حرفه ای هادی",
+  shortName: "هنرستان هادی",
+  fields: ["حسابداری", "شبکه و نرم‌افزار"],
+  address: "جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان",
+  phone: "02176201350",
+  email: "HonarestanHadi@gmail.com",
+  logo: "/icon.svg",
+} as const;
+
+const SCHOOL_DESCRIPTION = `${SCHOOL.name} — آموزش فنی و حرفه‌ای در رشته‌های ${SCHOOL.fields.join(" و ")}.`;
+
+/** صفحاتی که فعلاً محتوای واقعی ندارند و نباید ایندکس شوند. */
+const NOINDEX_PATHS = new Set(["/teachers", "/events", "/student-works", "/gallery"]);
 
 interface SeoData {
   pagePath: string;
@@ -24,14 +45,23 @@ interface SeoData {
 }
 
 const PAGE_DEFAULTS: Record<string, { title: string; description: string }> = {
-  "/": { title: "صفحه اصلی", description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق. آموزش نقاشی، مجسمه‌سازی، خوشنویسی، عکاسی و گرافیک با بهترین اساتید." },
-  "/about": { title: "درباره ما", description: "آشنایی با تاریخچه، ارزش‌ها و اهداف هنرستان هادی. مرکز آموزش هنرهای زیبا در تهران." },
-  "/gallery": { title: "گالری تصاویر", description: "گالری تصاویر هنرستان هادی. مشاهده آثار هنری هنرجویان و اساتید." },
-  "/news": { title: "اخبار", description: "آخرین اخبار و اطلاعیه‌های هنرستان هادی. رویدادها و اخبار آموزشی." },
-  "/contact": { title: "تماس با ما", description: "اطلاعات تماس هنرستان هادی. آدرس، تلفن و ایمیل برای ارتباط با ما." },
-  "/events": { title: "رویدادها", description: "رویدادهای هنرستان هادی. نمایشگاه‌ها، جشنواره‌ها و برنامه‌های ویژه." },
-  "/teachers": { title: "اساتید", description: "اساتید مجرب هنرستان هادی. معرفی کادر آموزشی با تجربه." },
-  "/student-works": { title: "آثار هنرجویان", description: "آثار هنری خلق شده توسط هنرجویان هنرستان هادی." },
+  "/": {
+    title: "صفحه اصلی",
+    description: SCHOOL_DESCRIPTION,
+  },
+  "/about": {
+    title: "درباره ما",
+    description: `معرفی ${SCHOOL.name} و رشته‌های آموزشی ${SCHOOL.fields.join(" و ")}.`,
+  },
+  "/gallery": { title: "گالری تصاویر", description: `تصاویر ${SCHOOL.name}.` },
+  "/news": { title: "اخبار", description: `اخبار و اطلاعیه‌های ${SCHOOL.name}.` },
+  "/contact": {
+    title: "تماس با ما",
+    description: `اطلاعات تماس ${SCHOOL.name}: آدرس، تلفن و ایمیل.`,
+  },
+  "/events": { title: "رویدادها", description: `رویدادها و برنامه‌های ${SCHOOL.name}.` },
+  "/teachers": { title: "کادر آموزشی", description: `معرفی کادر آموزشی ${SCHOOL.name}.` },
+  "/student-works": { title: "آثار هنرجویان", description: `آثار هنرجویان ${SCHOOL.name}.` },
 };
 
 export async function getSeoForPage(pagePath: string): Promise<SeoData> {
@@ -44,8 +74,11 @@ export async function getSeoForPage(pagePath: string): Promise<SeoData> {
   if (!seoSetting) {
     return {
       pagePath,
-      metaTitle: defaults.title || pagePath,
+      // برای مسیرهای بدون پیش‌فرض (مثل صفحه جزئیات خبر) عنوان خالی برگردانده می‌شود
+      // تا صفحه بتواند عنوان واقعی رکورد (مثلاً عنوان خبر) را استفاده کند.
+      metaTitle: defaults.title,
       metaDescription: defaults.description,
+      robots: NOINDEX_PATHS.has(pagePath) ? "noindex, follow" : "index, follow",
     };
   }
 
@@ -67,15 +100,26 @@ export async function getSeoForPage(pagePath: string): Promise<SeoData> {
   };
 }
 
+/** آیا این مسیر باید در sitemap و ایندکس بیاید؟ */
+export async function isPageIndexable(pagePath: string): Promise<boolean> {
+  if (NOINDEX_PATHS.has(pagePath)) return false;
+  const seo = await getSeoForPage(pagePath);
+  return !(seo.robots || "").toLowerCase().includes("noindex");
+}
+
 export async function generateSeoMetadata(pagePath: string): Promise<Metadata> {
   const seo = await getSeoForPage(pagePath);
-  const canonical = seo.canonicalUrl || `${SITE_URL}${pagePath}`;
-  const ogImage = seo.ogImage || seo.twitterImage || `${SITE_URL}/og-default.png`;
+  const canonical = seo.canonicalUrl || `${SITE_URL}${pagePath === "/" ? "" : pagePath}`;
+  const ogImage = seo.ogImage || seo.twitterImage;
 
   return {
-    title: seo.metaTitle,
+    // برای صفحه اصلی، عنوان با قالب «%s | نام سایت» دوباره تکرار نشود
+    title:
+      pagePath === "/"
+        ? { absolute: seo.metaTitle || SCHOOL.name }
+        : seo.metaTitle || SCHOOL.name,
     description: seo.metaDescription,
-    robots: seo.robots || "index, follow",
+    robots: seo.robots || (NOINDEX_PATHS.has(pagePath) ? "noindex, follow" : "index, follow"),
     alternates: {
       canonical: canonical,
     },
@@ -83,23 +127,28 @@ export async function generateSeoMetadata(pagePath: string): Promise<Metadata> {
       title: seo.ogTitle || seo.metaTitle,
       description: seo.ogDescription || seo.metaDescription,
       url: canonical,
-      siteName: "هنرستان هادی",
+      siteName: SCHOOL.name,
       locale: "fa_IR",
       type: (seo.ogType as "website" | "article") || "website",
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: seo.ogTitle || seo.metaTitle,
-        },
-      ],
+      // فقط وقتی تصویر واقعی ثبت شده باشد؛ در غیر این صورت هیچ URL شکسته‌ای تولید نمی‌شود
+      ...(ogImage
+        ? {
+            images: [
+              {
+                url: ogImage,
+                width: 1200,
+                height: 630,
+                alt: seo.ogTitle || seo.metaTitle,
+              },
+            ],
+          }
+        : {}),
     },
     twitter: {
       card: (seo.twitterCard as "summary" | "summary_large_image") || "summary_large_image",
       title: seo.twitterTitle || seo.ogTitle || seo.metaTitle,
       description: seo.twitterDescription || seo.ogDescription || seo.metaDescription,
-      images: [seo.twitterImage || ogImage],
+      ...(ogImage ? { images: [ogImage] } : {}),
     },
   };
 }
@@ -126,111 +175,66 @@ export function generateBreadcrumbJsonLd(items: { name: string; url: string }[])
   };
 }
 
+/** آدرس واقعی؛ بدون کدپستی ساختگی و بدون مختصات ساختگی. */
+function schoolAddress() {
+  return {
+    "@type": "PostalAddress",
+    addressCountry: "IR",
+    addressLocality: "جاجرود، روستای خسروآباد",
+    streetAddress: "خیابان سد لتیان، کوچه بوستان",
+  };
+}
+
+function schoolNode() {
+  return {
+    "@type": "School",
+    "@id": ORG_ID,
+    name: SCHOOL.name,
+    alternateName: SCHOOL.shortName,
+    url: SITE_URL,
+    description: SCHOOL_DESCRIPTION,
+    address: schoolAddress(),
+    telephone: SCHOOL.phone,
+    email: SCHOOL.email,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}${SCHOOL.logo}`,
+    },
+  };
+}
+
 export function generateWebSiteJsonLd(): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": SITE_ID,
-    name: "هنرستان هادی",
-    alternateName: "Honarestan Hadi",
+    name: SCHOOL.name,
     url: SITE_URL,
-    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
-    inLanguage: "fa",
-    publisher: {
-      "@type": "Organization",
-      "@id": ORG_ID,
-      name: "هنرستان هادی",
-      url: SITE_URL,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/icon.svg`,
-      },
-    },
+    description: SCHOOL_DESCRIPTION,
+    inLanguage: "fa-IR",
+    publisher: { "@id": ORG_ID },
   };
 }
 
-export function generateOrganizationJsonLd(): Record<string, unknown> {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": ORG_ID,
-    name: "هنرستان هادی",
-    alternateName: "Honarestan Hadi",
-    url: SITE_URL,
-    logo: {
-      "@type": "ImageObject",
-      url: `${SITE_URL}/icon.svg`,
-    },
-    image: `${SITE_URL}/icon.svg`,
-    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
-    address: {
-      "@type": "PostalAddress",
-      addressCountry: "IR",
-      addressLocality: "تهران",
-    },
-    contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "customer service",
-      availableLanguage: ["Persian", "Farsi"],
-    },
-    sameAs: [],
-  };
-}
-
-export function generateEducationalOrganizationJsonLd(): Record<string, unknown> {
-  return {
-    "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    "@id": ORG_ID,
-    name: "هنرستان هادی",
-    alternateName: "Honarestan Hadi",
-    url: SITE_URL,
-    logo: {
-      "@type": "ImageObject",
-      url: `${SITE_URL}/icon.svg`,
-    },
-    image: `${SITE_URL}/icon.svg`,
-    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
-    address: {
-      "@type": "PostalAddress",
-      addressCountry: "IR",
-      addressLocality: "تهران",
-    },
-    contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "customer service",
-      availableLanguage: ["Persian", "Farsi"],
-    },
-    sameAs: [],
-  };
-}
-
+/** تنها هویت سازمانی سایت (School). */
 export function generateSchoolJsonLd(): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
-    "@type": "School",
-    "@id": ORG_ID,
-    name: "هنرستان هادی",
-    alternateName: "Honarestan Hadi",
-    url: SITE_URL,
-    logo: {
-      "@type": "ImageObject",
-      url: `${SITE_URL}/icon.svg`,
-    },
-    image: `${SITE_URL}/icon.svg`,
-    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
-    address: {
-      "@type": "PostalAddress",
-      addressCountry: "IR",
-      addressLocality: "تهران",
-    },
-    contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "customer service",
-      availableLanguage: ["Persian", "Farsi"],
-    },
-    sameAs: [],
+    ...schoolNode(),
   };
+}
+
+/** نگاشت‌های سازگار با کد قدیمی — همگی به همان هویت School اشاره می‌کنند. */
+export function generateOrganizationJsonLd(): Record<string, unknown> {
+  return { "@context": "https://schema.org", ...schoolNode() };
+}
+
+export function generateEducationalOrganizationJsonLd(): Record<string, unknown> {
+  return { "@context": "https://schema.org", ...schoolNode() };
+}
+
+export function generateLocalBusinessJsonLd(): Record<string, unknown> {
+  return { "@context": "https://schema.org", ...schoolNode() };
 }
 
 export function generateWebPageJsonLd(
@@ -246,58 +250,9 @@ export function generateWebPageJsonLd(
     url: pageUrl,
     name: name,
     description: description,
-    inLanguage: "fa",
-    isPartOf: {
-      "@type": "WebSite",
-      "@id": SITE_ID,
-    },
-    about: {
-      "@type": "Organization",
-      "@id": ORG_ID,
-    },
-    primaryImageOfPage: {
-      "@type": "ImageObject",
-      url: `${SITE_URL}/og-default.png`,
-    },
-  };
-}
-
-export function generateLocalBusinessJsonLd(): Record<string, unknown> {
-  return {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": `${SITE_URL}#localbusiness`,
-    name: "هنرستان هادی",
-    alternateName: "Honarestan Hadi",
-    url: SITE_URL,
-    logo: {
-      "@type": "ImageObject",
-      url: `${SITE_URL}/icon.svg`,
-    },
-    image: `${SITE_URL}/icon.svg`,
-    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق",
-    address: {
-      "@type": "PostalAddress",
-      addressCountry: "IR",
-      addressLocality: "تهران",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: 35.6892,
-      longitude: 51.389,
-    },
-    telephone: "",
-    email: "",
-    contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "customer service",
-      availableLanguage: ["Persian", "Farsi"],
-    },
-    areaServed: {
-      "@type": "Country",
-      name: "ایران",
-    },
-    sameAs: [],
+    inLanguage: "fa-IR",
+    isPartOf: { "@id": SITE_ID },
+    about: { "@id": ORG_ID },
   };
 }
 
@@ -307,8 +262,9 @@ export function generateContactPointJsonLd(
 ): Record<string, unknown> {
   const contactPoint: Record<string, unknown> = {
     "@type": "ContactPoint",
-    contactType: "customer service",
-    availableLanguage: ["Persian", "Farsi"],
+    contactType: "admissions",
+    contactOption: "TollFree",
+    availableLanguage: ["fa"],
   };
   if (telephone) contactPoint.telephone = telephone;
   if (email) contactPoint.email = email;
@@ -330,35 +286,11 @@ export function generateEventJsonLd(event: {
     description: event.description,
     startDate: event.date.toISOString(),
     url: event.url,
-    organizer: {
-      "@type": "Organization",
-      "@id": ORG_ID,
-      name: "هنرستان هادی",
-      url: SITE_URL,
-    },
-    location: event.location
-      ? {
-          "@type": "Place",
-          name: event.location,
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "تهران",
-            addressCountry: "IR",
-          },
-        }
-      : {
-          "@type": "Place",
-          name: "هنرستان هادی",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "تهران",
-            addressCountry: "IR",
-          },
-        },
-    performer: {
-      "@type": "Organization",
-      "@id": ORG_ID,
-      name: "هنرستان هادی",
+    organizer: { "@id": ORG_ID },
+    location: {
+      "@type": "Place",
+      name: event.location || SCHOOL.name,
+      address: schoolAddress(),
     },
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
@@ -369,4 +301,4 @@ export function generateEventJsonLd(event: {
   return schema;
 }
 
-export { SITE_URL };
+export { SITE_URL, ORG_ID, SITE_ID };

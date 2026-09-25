@@ -32,6 +32,9 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files - .env is intentionally committed for backup
+# .env.local holds real secrets (Cloudinary) and must stay local
+.env.local
+.env*.local
 
 # vercel
 .vercel

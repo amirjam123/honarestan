@@ -44,8 +44,8 @@ export default function ContactPage() {
   const [replyStatus, setReplyStatus] = useState<"idle" | "loading" | "error">("idle");
   const [loadingTickets, setLoadingTickets] = useState(false);
   const [contactInfo, setContactInfo] = useState({
-    address: "شهرستان پردیس , جاجرود , روستای خسرو اباد , خیابان سد لتیان , کوچه بوستان",
-    phone: "۰۲۱-۷۶۲۰۱۳۵۰",
+    address: "جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان",
+    phone: "02176201350",
     email: "HonarestanHadi@gmail.com",
   });
 

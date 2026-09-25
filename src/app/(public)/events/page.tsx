@@ -22,13 +22,13 @@ export default async function EventsPage() {
 
   return (
     <div>
-      <JsonLd data={generateWebPageJsonLd("/events", "رویدادهای هنرستان هادی", "رویدادهای هنرستان هادی. نمایشگاه‌ها، جشنواره‌ها و برنامه‌های ویژه.")} />
+      <JsonLd data={generateWebPageJsonLd("/events", "رویدادهای هنرستان فنی حرفه ای هادی", "رویدادها و برنامه‌های هنرستان فنی حرفه ای هادی.")} />
       {generateJsonLd("/events", seo) && <JsonLd data={generateJsonLd("/events", seo)!} />}
       <JsonLd data={generateBreadcrumbJsonLd([
         { name: "صفحه اصلی", url: SITE_URL },
         { name: "رویدادها", url: `${SITE_URL}/events` },
       ])} />
-      <Hero title="رویدادها" subtitle="آخرین رویدادها و برنامه‌های هنرستان هادی" />
+      <Hero title="رویدادها" subtitle="رویدادها و برنامه‌های هنرستان فنی حرفه ای هادی" />
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {events.length === 0 ? (

@@ -160,7 +160,7 @@ export default function AdminSettingsPage() {
               <label className="block text-xs font-medium text-slate-600 mb-1.5">زیرعنوان بنر اصلی</label>
               <input
                 type="text"
-                placeholder="مرکز آموزش هنرهای زیبا"
+                placeholder="نام کامل هنرستان"
                 value={settings.hero_subtitle || ""}
                 onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })}
                 className="admin-input"
@@ -177,7 +177,7 @@ export default function AdminSettingsPage() {
               <label className="block text-xs font-medium text-slate-600 mb-1.5">آدرس</label>
               <input
                 type="text"
-                placeholder="تهران، خیابان نمونه"
+                placeholder="مثال: جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان"
                 value={settings.address || ""}
                 onChange={(e) => setSettings({ ...settings, address: e.target.value })}
                 className="admin-input"
@@ -187,7 +187,7 @@ export default function AdminSettingsPage() {
               <label className="block text-xs font-medium text-slate-600 mb-1.5">تلفن</label>
               <input
                 type="text"
-                placeholder="۰۲۱-۱۲۳۴۵۶۷۸"
+                placeholder="۰۲۱۷۶۲۰۱۳۵۰"
                 value={settings.phone || ""}
                 onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
                 className="admin-input"

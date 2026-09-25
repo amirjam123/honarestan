@@ -7,7 +7,7 @@ import ImageLightbox from "@/components/ui/ImageLightbox";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
-import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd, generateWebSiteJsonLd, generateEducationalOrganizationJsonLd, generateJsonLd } from "@/lib/seo";
+import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd, generateWebSiteJsonLd, generateJsonLd } from "@/lib/seo";
 import {
   BookOpen, UserGroup,
   ArrowLeft,
@@ -64,7 +64,7 @@ async function SchoolProfileSection() {
       </div>
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl border border-slate-200 p-6 lg:p-8">
-          <h3 className="font-bold text-sm text-slate-800 mb-3">تاریخچه</h3>
+          <h3 className="font-bold text-sm text-slate-800 mb-3">معرفی هنرستان</h3>
           <p className="text-slate-600 text-sm leading-7">{schoolProfile.overview}</p>
         </div>
       </div>
@@ -118,7 +118,7 @@ async function TeachersSection() {
             <UserGroup size={14} />
             <span>اساتید</span>
           </div>
-          <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-3">اساتید مجرب</h2>
+          <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-3">کادر آموزشی</h2>
         </div>
         {teachers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -145,7 +145,7 @@ async function TeachersSection() {
         ) : (
           <div className="text-center text-slate-400 py-12">
             <UserGroup size={40} className="mx-auto mb-3 text-slate-300" />
-            <p className="text-sm">اطلاعات اساتید به زودی اضافه خواهد شد</p>
+            <p className="text-sm">اطلاعات کادر آموزشی به زودی اضافه خواهد شد</p>
           </div>
         )}
       </div>
@@ -328,7 +328,6 @@ export default async function HomePage() {
   return (
     <div>
       <JsonLd data={generateSchoolJsonLd()} />
-      <JsonLd data={generateEducationalOrganizationJsonLd()} />
       <JsonLd data={generateWebSiteJsonLd()} />
       {generateJsonLd("/", seo) && <JsonLd data={generateJsonLd("/", seo)!} />}
       <Suspense fallback={<HeroSkeleton />}>

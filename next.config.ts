@@ -63,7 +63,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://fonts.googleapis.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com",
+      "img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://res.cloudinary.com https://s7.uplod.ir",
       "font-src 'self' data: https://fonts.gstatic.com",
       "connect-src 'self' https://api.telegram.org",
       "frame-ancestors 'none'",

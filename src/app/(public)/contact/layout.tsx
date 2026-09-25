@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateSeoMetadata, generateLocalBusinessJsonLd, generateBreadcrumbJsonLd, generateWebPageJsonLd, SITE_URL } from "@/lib/seo";
+import { generateSeoMetadata, generateSchoolJsonLd, generateBreadcrumbJsonLd, generateWebPageJsonLd, SITE_URL } from "@/lib/seo";
 import JsonLd from "@/components/ui/JsonLd";
 
 export const dynamic = "force-dynamic";
@@ -15,8 +15,8 @@ export default function ContactLayout({
 }) {
   return (
     <>
-      <JsonLd data={generateWebPageJsonLd("/contact", "تماس با ما", "اطلاعات تماس هنرستان هادی. آدرس، تلفن و ایمیل برای ارتباط با ما.")} />
-      <JsonLd data={generateLocalBusinessJsonLd()} />
+      <JsonLd data={generateWebPageJsonLd("/contact", "تماس با ما", "اطلاعات تماس هنرستان فنی حرفه ای هادی: آدرس، تلفن و ایمیل.")} />
+      <JsonLd data={generateSchoolJsonLd()} />
       <JsonLd data={generateBreadcrumbJsonLd([
         { name: "صفحه اصلی", url: SITE_URL },
         { name: "تماس با ما", url: `${SITE_URL}/contact` },

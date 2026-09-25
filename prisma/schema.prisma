@@ -14,6 +14,7 @@ model News {
   content   String
   excerpt   String
   image     String?
+  telegram_file_id String?
   published Boolean   @default(false)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -193,6 +194,21 @@ model TicketMessage {
   senderType String   // "user" or "admin"
   senderName String
   createdAt  DateTime @default(now())
+
+  attachments TicketAttachment[]
+}
+
+model TicketAttachment {
+  id             String   @id
+  messageId      String
+  filename       String
+  mimeType       String
+  size           Int
+  telegramFileId String
+  url            String
+  createdAt      DateTime @default(now())
+
+  message TicketMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
 }
 
 model SecurityLog {

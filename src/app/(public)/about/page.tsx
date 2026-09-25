@@ -47,13 +47,13 @@ export default async function AboutPage() {
 
   return (
     <div>
-      <JsonLd data={generateWebPageJsonLd("/about", "درباره هنرستان هادی", "آشنایی با تاریخچه، ارزش‌ها و اهداف هنرستان هادی")} />
+      <JsonLd data={generateWebPageJsonLd("/about", "درباره هنرستان فنی حرفه ای هادی", "معرفی هنرستان فنی حرفه ای هادی و رشته‌های آموزشی حسابداری و شبکه و نرم‌افزار.")} />
       {generateJsonLd("/about", seo) && <JsonLd data={generateJsonLd("/about", seo)!} />}
       <JsonLd data={generateBreadcrumbJsonLd([
         { name: "صفحه اصلی", url: SITE_URL },
         { name: "درباره ما", url: `${SITE_URL}/about` },
       ])} />
-      <Hero title="درباره هنرستان هادی" subtitle="آشنایی با تاریخچه و ارزش‌های ما" hideAbout />
+      <Hero title="درباره هنرستان فنی حرفه ای هادی" subtitle="معرفی هنرستان و رشته‌های آموزشی" hideAbout />
 
       {/* Principal Welcome Message */}
       {principalProfile?.welcomeMessage && (

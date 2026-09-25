@@ -713,7 +713,7 @@ export default function SetupWizardPage() {
                 <input
                   id="setup-address"
                   type="text"
-                  placeholder="تهران، خیابان نمونه"
+                  placeholder="مثال: جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان"
                   value={settings.address || ""}
                   onChange={(e) => setSettings({ ...settings, address: e.target.value })}
                   className="admin-input"
@@ -771,7 +771,7 @@ export default function SetupWizardPage() {
                 <input
                   id="setup-hero-subtitle"
                   type="text"
-                  placeholder="مثلاً: مرکز آموزش هنرهای زیبا"
+                  placeholder="مثلاً: هنرستان فنی حرفه ای هادی"
                   value={settings.hero_subtitle || ""}
                   onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })}
                   className="admin-input"

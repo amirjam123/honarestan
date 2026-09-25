@@ -22,13 +22,13 @@ export default async function TeachersPage() {
 
   return (
     <div>
-      <JsonLd data={generateWebPageJsonLd("/teachers", "اساتید هنرستان هادی", "اساتید مجرب هنرستان هادی. معرفی کادر آموزشی با تجربه.")} />
+      <JsonLd data={generateWebPageJsonLd("/teachers", "کادر آموزشی هنرستان فنی حرفه ای هادی", "معرفی کادر آموزشی هنرستان فنی حرفه ای هادی.")} />
       {generateJsonLd("/teachers", seo) && <JsonLd data={generateJsonLd("/teachers", seo)!} />}
       <JsonLd data={generateBreadcrumbJsonLd([
         { name: "صفحه اصلی", url: SITE_URL },
-        { name: "اساتید", url: `${SITE_URL}/teachers` },
+        { name: "کادر آموزشی", url: `${SITE_URL}/teachers` },
       ])} />
-      <Hero title="اساتید هنرستان" subtitle="تیمی از بهترین و مجرب‌ترین اساتید هنر کشور" />
+      <Hero title="کادر آموزشی" subtitle="معرفی کادر آموزشی هنرستان فنی حرفه ای هادی" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {teachers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -57,7 +57,7 @@ export default async function TeachersPage() {
         ) : (
           <div className="text-center text-slate-400 py-20">
             <UserGroup size={48} className="mx-auto mb-4 text-slate-300" />
-            <p className="text-base text-slate-500">اطلاعات اساتید به زودی اضافه خواهد شد</p>
+            <p className="text-base text-slate-500">اطلاعات کادر آموزشی به زودی اضافه خواهد شد</p>
           </div>
         )}
       </div>

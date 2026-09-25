@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Vazirmatn } from "next/font/google";
+import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const vazir = Vazirmatn({
@@ -12,35 +13,35 @@ const vazir = Vazirmatn({
 
 export const metadata: Metadata = {
   title: {
-    default: "هنرستان هادی | Honarestan Hadi",
-    template: "%s | هنرستان هادی",
+    default: "هنرستان فنی حرفه ای هادی | Honarestan Hadi",
+    template: "%s | هنرستان فنی حرفه ای هادی",
   },
   description:
-    "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق. آموزش نقاشی، مجسمه‌سازی، خوشنویسی، عکاسی و گرافیک با بهترین اساتید.",
+    "هنرستان فنی حرفه ای هادی؛ آموزش فنی و حرفه‌ای در رشته‌های حسابداری و شبکه و نرم‌افزار.",
   keywords: [
+    "هنرستان فنی حرفه ای هادی",
     "هنرستان هادی",
-    "آموزش هنر",
-    "نقاشی",
-    "مجسمه‌سازی",
-    "خوشنویسی",
-    "عکاسی",
-    "گرافیک",
+    "ثبت نام هنرستان",
+    "رشته حسابداری",
+    "شبکه و نرم افزار",
   ],
   openGraph: {
     type: "website",
     locale: "fa_IR",
-    siteName: "هنرستان هادی",
-    title: "هنرستان هادی | مرکز آموزش هنرهای زیبا",
-    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق.",
-    url: "https://honarestan-hadi.ir",
+    siteName: "هنرستان فنی حرفه ای هادی",
+    title: "هنرستان فنی حرفه ای هادی",
+    description:
+      "هنرستان فنی حرفه ای هادی؛ آموزش فنی و حرفه‌ای در رشته‌های حسابداری و شبکه و نرم‌افزار.",
+    url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "هنرستان هادی | مرکز آموزش هنرهای زیبا",
-    description: "هنرستان هادی - مرکز آموزش هنرهای زیبا و صنایع خلاق.",
+    title: "هنرستان فنی حرفه ای هادی",
+    description:
+      "هنرستان فنی حرفه ای هادی؛ آموزش فنی و حرفه‌ای در رشته‌های حسابداری و شبکه و نرم‌افزار.",
   },
-  metadataBase: new URL("https://honarestan-hadi.ir"),
-  applicationName: "هنرستان هادی",
+  metadataBase: new URL(SITE_URL),
+  applicationName: "هنرستان فنی حرفه ای هادی",
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
