@@ -90,6 +90,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        // میزبان قبلی لوگو (تنظیم `logo_url` در پنل مدیریت) - برای بهینه‌سازی با next/image
+        protocol: "https",
+        hostname: "s7.uplod.ir",
+      },
     ],
   },
   compress: true,

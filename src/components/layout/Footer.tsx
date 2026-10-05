@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { LocationMarker, Phone, Envelope, ArrowLeft } from "@/components/icons";
 import { getSettings } from "@/lib/settings-cache";
 
 export default function Footer() {
   const [schoolName, setSchoolName] = useState("هنرستان فنی و حرفه ای هادی");
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>("/logo.webp");
   const [contactInfo, setContactInfo] = useState({
     address: "جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان",
     phone: "02176201350",
@@ -33,7 +34,15 @@ export default function Footer() {
             <div className="flex items-center gap-2.5 mb-4">
               {logoUrl ? (
                 <div className="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center bg-white">
-                  <img src={logoUrl} alt={schoolName} className="max-w-full max-h-full object-contain" />
+                  <Image
+                    src={logoUrl}
+                    alt={schoolName}
+                    width={1024}
+                    height={558}
+                    sizes="36px"
+                    className="max-w-full max-h-full object-contain"
+                    onError={() => setLogoUrl("/logo.webp")}
+                  />
                 </div>
               ) : (
                 <div className="w-9 h-9 bg-primary-600 rounded-lg flex items-center justify-center">

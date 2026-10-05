@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bars3, XMark } from "@/components/icons";
@@ -20,7 +21,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [schoolName, setSchoolName] = useState("هنرستان هادی");
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>("/logo.webp");
   const pathname = usePathname();
 
   useEffect(() => {
@@ -56,7 +57,16 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-2.5" aria-label={`صفحه اصلی ${schoolName}`}>
             {logoUrl ? (
               <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg overflow-hidden flex items-center justify-center bg-white">
-                <img src={logoUrl} alt={schoolName} className="max-w-full max-h-full object-contain" />
+                <Image
+                  src={logoUrl}
+                  alt={schoolName}
+                  width={1024}
+                  height={558}
+                  sizes="40px"
+                  priority
+                  className="max-w-full max-h-full object-contain"
+                  onError={() => setLogoUrl("/logo.webp")}
+                />
               </div>
             ) : (
               <div className="w-9 h-9 lg:w-10 lg:h-10 bg-primary-600 rounded-lg flex items-center justify-center">
