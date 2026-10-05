@@ -21,8 +21,8 @@ async function main() {
   }
 
   const settings = [
-    { key: "school_name", value: "هنرستان فنی حرفه ای هادی" },
-    { key: "hero_title", value: "هنرستان فنی حرفه ای هادی" },
+    { key: "school_name", value: "هنرستان فنی و حرفه ای هادی" },
+    { key: "hero_title", value: "هنرستان فنی و حرفه ای هادی" },
     { key: "hero_subtitle", value: "" },
     { key: "address", value: "جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان" },
     { key: "phone", value: "02176201350" },
@@ -44,7 +44,7 @@ async function main() {
     create: {
       slug: "about",
       title: "درباره ما",
-      content: `## درباره هنرستان فنی حرفه ای هادی\n\nهنرستان فنی حرفه ای هادی در رشته‌های حسابداری و شبکه و نرم‌افزار دانش‌آموز پذیرش می‌کند.\n\n### رشته‌های آموزشی\n\n- **حسابداری**\n- **شبکه و نرم‌افزار**`,
+      content: `## درباره هنرستان فنی و حرفه ای هادی\n\nهنرستان فنی و حرفه ای هادی در رشته‌های حسابداری و شبکه و نرم‌افزار دانش‌آموز پذیرش می‌کند.\n\n### رشته‌های آموزشی\n\n- **حسابداری**\n- **شبکه و نرم‌افزار**`,
     },
   });
   console.log("About page created");
@@ -105,20 +105,20 @@ async function main() {
   const seoSettings = [
     {
       pagePath: "/",
-      metaTitle: "هنرستان فنی حرفه ای هادی",
-      metaDescription: "هنرستان فنی حرفه ای هادی؛ آموزش فنی و حرفه‌ای در رشته‌های حسابداری و شبکه و نرم‌افزار.",
+      metaTitle: "هنرستان فنی و حرفه ای هادی",
+      metaDescription: "هنرستان فنی و حرفه ای هادی؛ آموزش فنی و حرفه‌ای در رشته‌های حسابداری و شبکه و نرم‌افزار.",
       robots: "index, follow",
     },
     {
       pagePath: "/about",
       metaTitle: "درباره ما",
-      metaDescription: "معرفی هنرستان فنی حرفه ای هادی و رشته‌های آموزشی حسابداری و شبکه و نرم‌افزار.",
+      metaDescription: "معرفی هنرستان فنی و حرفه ای هادی و رشته‌های آموزشی حسابداری و شبکه و نرم‌افزار.",
       robots: "index, follow",
     },
     {
       pagePath: "/gallery",
       metaTitle: "گالری تصاویر",
-      metaDescription: "تصاویر هنرستان فنی حرفه ای هادی.",
+      metaDescription: "تصاویر هنرستان فنی و حرفه ای هادی.",
       robots: "noindex, follow",
     },
     {

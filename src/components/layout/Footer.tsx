@@ -6,7 +6,7 @@ import { LocationMarker, Phone, Envelope, ArrowLeft } from "@/components/icons";
 import { getSettings } from "@/lib/settings-cache";
 
 export default function Footer() {
-  const [schoolName, setSchoolName] = useState("هنرستان فنی حرفه ای هادی");
+  const [schoolName, setSchoolName] = useState("هنرستان فنی و حرفه ای هادی");
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [contactInfo, setContactInfo] = useState({
     address: "جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان",

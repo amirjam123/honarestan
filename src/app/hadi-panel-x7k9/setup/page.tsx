@@ -771,7 +771,7 @@ export default function SetupWizardPage() {
                 <input
                   id="setup-hero-subtitle"
                   type="text"
-                  placeholder="مثلاً: هنرستان فنی حرفه ای هادی"
+                  placeholder="مثلاً: هنرستان فنی و حرفه ای هادی"
                   value={settings.hero_subtitle || ""}
                   onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })}
                   className="admin-input"

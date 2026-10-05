@@ -13,7 +13,7 @@ const SITE_ID = `${SITE_URL}#website`;
  * هیچ مقداری (سال تأسیس، سابقه، آمار، سوابق) بدون تأیید اضافه نمی‌شود.
  */
 export const SCHOOL = {
-  name: "هنرستان فنی حرفه ای هادی",
+  name: "هنرستان فنی و حرفه ای هادی",
   shortName: "هنرستان هادی",
   fields: ["حسابداری", "شبکه و نرم‌افزار"],
   address: "جاجرود، روستای خسروآباد، خیابان سد لتیان، کوچه بوستان",
@@ -46,7 +46,7 @@ interface SeoData {
 
 const PAGE_DEFAULTS: Record<string, { title: string; description: string }> = {
   "/": {
-    title: "صفحه اصلی",
+    title: SCHOOL.name,
     description: SCHOOL_DESCRIPTION,
   },
   "/about": {
