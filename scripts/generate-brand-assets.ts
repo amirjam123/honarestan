@@ -1,7 +1,8 @@
-// تولید لوگوی بهینه‌شده و فاوآیکون از honarestan-hadi-logo.jpg
+// تولید تصاویر برند (لوگوی بهینه‌شده) از honarestan-hadi-logo.jpg
+// نکته: هیچ favicon/آیکون سایتی تولید نمی‌شود — سایت عمداً favicon سفارشی ندارد.
 // اجرا: npx tsx scripts/generate-brand-assets.ts
 import sharp from "sharp";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 
 const SRC = "honarestan-hadi-logo.jpg";
 const OUT_DIR = "public";
@@ -86,8 +87,8 @@ async function main() {
 
   base = () => sharp(SRC).extract(regionFull);
 
-  // 2) فاوآیکون فقط حرف «ه» است (icon.svg موجود) — PNGهای کوچک لازم نیست.
-  //    فقط برای apple-touch-icon و PWA که PNG هستند استفاده می‌شوند.
+  // 2) تصاویر PNG برند — فقط برای مصارف داخلی/پروژه‌های آینده؛
+  //    هیچ‌کدام به‌عنوان favicon یا آیکون سایت معرفی نمی‌شوند.
   for (const s of [180, 192, 512]) {
     await base()
       .resize(s, s, { fit: "cover" })
@@ -110,51 +111,7 @@ async function main() {
   console.log("done.");
 }
 
-// ---------- favicon.ico از همان تصویر لوگو ----------
-async function generateFavicons() {
-  const ICO_SIZES = [16, 32, 48];
-  const pngs: Buffer[] = [];
-
-  for (const s of ICO_SIZES) {
-    const buf = await base()
-      .clone()
-      .resize(s, s, { fit: "cover" })
-      .png({ compressionLevel: 9 })
-      .toBuffer();
-    pngs.push(buf);
-    writeFileSync(`${OUT_DIR}/favicon-${s}.png`, buf);
-  }
-
-  // ساخت favicon.ico چنداندازه‌ای (فرمت ICO: header + entries + داده PNG)
-  const count = pngs.length;
-  const header = Buffer.alloc(6);
-  header.writeUInt16LE(0, 0); // reserved
-  header.writeUInt16LE(1, 2); // type = icon
-  header.writeUInt16LE(count, 4);
-
-  const dir = Buffer.alloc(16 * count);
-  let offset = 6 + 16 * count;
-  pngs.forEach((png, i) => {
-    const s = ICO_SIZES[i];
-    const e = 16 * i;
-    dir.writeUInt8(s, e + 0); // width
-    dir.writeUInt8(s, e + 1); // height
-    dir.writeUInt8(0, e + 2); // palette
-    dir.writeUInt8(0, e + 3); // reserved
-    dir.writeUInt16LE(1, e + 4); // color planes
-    dir.writeUInt16LE(32, e + 6); // bits per pixel
-    dir.writeUInt32LE(png.length, e + 8);
-    dir.writeUInt32LE(offset, e + 12);
-    offset += png.length;
-  });
-
-  const ico = Buffer.concat([header, dir, ...pngs]);
-  writeFileSync(`${OUT_DIR}/favicon.ico`, ico);
-  console.log(`favicon.ico: ${ico.length} bytes (${ICO_SIZES.join(", ")})`);
-}
-
 main()
-  .then(generateFavicons)
   .catch((e) => {
     console.error(e);
     process.exit(1);
