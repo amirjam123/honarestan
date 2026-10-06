@@ -139,7 +139,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Icon and favicon - long cache
+      // Icon file - long cache (structured-data logo only, not a favicon)
       {
         source: "/icon.svg",
         headers: [
