@@ -1,0 +1,74 @@
+import Link from "next/link";
+import ActivityCard from "@/components/ui/ActivityCard";
+
+const PAGE_SIZE = 12;
+
+export default function ActivitiesList({
+  activities,
+  pageNumber,
+  hasPreviousPage,
+  hasNextPage,
+}: {
+  activities: Array<{ id: string; kind: "gallery" | "news" | "event" }>;
+  pageNumber: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}) {
+  const totalCount = activities.length;
+
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {activities.map((activity) => (
+          <ActivityCard
+            key={activity.id}
+            activity={activity}
+            href={
+              activity.kind === "event"
+                ? `/events#${activity.id}`
+                : `/${activity.kind}/${activity.id}`
+            }
+          />
+        ))}
+      </div>
+
+      {hasPreviousPage || hasNextPage ? (
+        <div className="mt-10 flex items-center justify-between">
+          <p className="text-sm text-slate-500">
+            {hasPreviousPage
+              ? `صفحه ${pageNumber} از ${Math.ceil(totalCount / PAGE_SIZE)}`
+              : `صفحه ${pageNumber}`}
+          </p>
+          <div className="flex gap-2">
+            {hasPreviousPage ? (
+              <Link
+                href={{
+                  pathname: "/activities",
+                  query: { page: String(pageNumber - 1) },
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                قبلی
+              </Link>
+            ) : (
+              <span className="text-sm text-slate-400">قبلی</span>
+            )}
+            {hasNextPage ? (
+              <Link
+                href={{
+                  pathname: "/activities",
+                  query: { page: String(pageNumber + 1) },
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                بعدی
+              </Link>
+            ) : (
+              <span className="text-sm text-slate-400">بعدی</span>
+            )}
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
+}

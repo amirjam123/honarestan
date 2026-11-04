@@ -6,7 +6,8 @@ import JsonLd from "@/components/ui/JsonLd";
 import ImageLightbox from "@/components/ui/ImageLightbox";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { formatDate } from "@/lib/utils";
+import { getLatestActivities } from "@/lib/activities";
+import ActivityCard from "@/components/ui/ActivityCard";
 import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd, generateWebSiteJsonLd, generateJsonLd } from "@/lib/seo";
 import {
   BookOpen, UserGroup,
@@ -321,6 +322,58 @@ async function HeroContent() {
     />
   );
 }
+
+async function LatestActivitiesSection() {
+  const { items } = await getLatestActivities({ limit: 6 });
+
+  return (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700">
+              <Photo size={14} />
+              <span>فعالیت‌ها</span>
+            </div>
+          </div>
+          <h2 className="mt-3 text-2xl lg:text-3xl font-bold text-slate-900">
+            تازه‌ترین فعالیت‌های هنرستان
+          </h2>
+          <p className="text-slate-500 text-sm mt-1">آخرین اخبار، تصاویر و اتفاقات هنرستان هادی</p>
+        </div>
+        <Link
+          href="/activities"
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium text-sm"
+        >
+          مشاهده همه فعالیت‌ها
+          <ArrowLeft size={16} />
+        </Link>
+      </div>
+
+      {items.length > 0 ? (
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {items.map((activity) => (
+            <ActivityCard
+              key={activity.id}
+              activity={activity}
+              href={
+                activity.kind === "event"
+                  ? `/events#${activity.id}`
+                  : `/${activity.kind}/${activity.id}`
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="mt-8 text-center text-slate-400 py-12">
+          <Photo size={40} className="mx-auto mb-3 text-slate-300" />
+          <p className="text-sm">هنوز فعالیتی منتشر نشده است</p>
+        </div>
+      )}
+    </section>
+  );
+}
+
 
 export default async function HomePage() {
   const seo = await getSeoForPage("/");
