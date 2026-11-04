@@ -21,12 +21,18 @@ export async function GET(request: NextRequest) {
     }
 
     const contentType = response.headers.get("content-type") || "image/jpeg";
+// Telegram sometimes returns application/octet-stream; fall back to image type based on file extension
+const resolvedContentType = contentType === "application/octet-stream"
+  ? (filePath.match(/\.(jpe?g|png|gif|webp)$/i)
+      ? `image/${filePath.match(/\.(jpe?g|png|gif|webp)$/i)[1].toLowerCase().replace('jpg','jpeg')}`
+      : "image/jpeg")
+  : contentType;
     const body = await response.arrayBuffer();
 
     return new NextResponse(body, {
       status: 200,
       headers: {
-        "Content-Type": contentType,
+        "Content-Type": resolvedContentType,
         "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
       },
     });
