@@ -378,7 +378,7 @@ export default function SetupWizardPage() {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const res = await fetch("/api/upload/telegram", { method: "POST", body: formData });
       if (res.ok) {
         const data = await res.json();
         setSettings((prev) => ({ ...prev, logo_url: data.url }));

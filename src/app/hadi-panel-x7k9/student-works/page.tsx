@@ -36,7 +36,7 @@ export default function AdminStudentWorksPage() {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const res = await fetch("/api/upload/telegram", { method: "POST", body: formData });
       if (res.ok) {
         const { url } = await res.json();
         setForm((prev) => ({ ...prev, image: url }));

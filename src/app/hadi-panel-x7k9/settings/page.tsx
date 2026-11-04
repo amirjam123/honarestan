@@ -31,7 +31,7 @@ export default function AdminSettingsPage() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const res = await fetch("/api/upload/telegram", { method: "POST", body: formData });
       if (res.ok) {
         const data = await res.json();
         setSettings({ ...settings, logo_url: data.url });

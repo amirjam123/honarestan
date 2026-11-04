@@ -261,7 +261,7 @@ export default function AdminMediaPage() {
         // Upload file
         const formData = new FormData();
         formData.append("file", uploadFile);
-        const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+        const uploadRes = await fetch("/api/upload/telegram", { method: "POST", body: formData });
 
         if (uploadRes.ok) {
           const { url } = await uploadRes.json();
