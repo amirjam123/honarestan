@@ -8,11 +8,10 @@ interface GalleryItemProps {
   title: string;
   image: string;
   description?: string | null;
-  category: string;
   onDelete?: (id: string) => void;
 }
 
-export default function GalleryItem({ id, title, image, description, category, onDelete }: GalleryItemProps) {
+export default function GalleryItem({ id, title, image, description, onDelete }: GalleryItemProps) {
   const [showModal, setShowModal] = useState(false);
 
   const closeModal = useCallback(() => setShowModal(false), []);
@@ -41,11 +40,6 @@ export default function GalleryItem({ id, title, image, description, category, o
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
             onClick={() => setShowModal(true)}
           />
-          <div className="absolute top-3 right-3">
-            <span className="px-2.5 py-1 bg-white/90 backdrop-blur-sm rounded-md text-[11px] font-medium text-slate-600">
-              {category}
-            </span>
-          </div>
           {onDelete && (
             <button
               onClick={() => onDelete(id)}

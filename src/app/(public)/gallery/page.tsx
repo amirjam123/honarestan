@@ -41,7 +41,6 @@ export default async function GalleryPage() {
                   title={item.title}
                   image={item.image}
                   description={item.description}
-                  category={item.category}
                 />
               ))}
             </div>
