@@ -11,15 +11,17 @@ export default function ActivitiesList({
 }: {
   activities: Array<{ id: string; kind: "gallery" | "news" | "event" }>;
   pageNumber: number;
+  totalCount: number;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }) {
-  const totalCount = activities.length;
+  const startIndex = (pageNumber - 1) * PAGE_SIZE;
+  const paginatedActivities = activities.slice(startIndex, startIndex + PAGE_SIZE);
 
   return (
     <>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {activities.map((activity) => (
+        {paginatedActivities.map((activity) => (
           <ActivityCard
             key={activity.id}
             activity={activity}

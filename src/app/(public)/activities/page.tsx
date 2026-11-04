@@ -85,7 +85,7 @@ export default async function ActivitiesPage({
                 <p className="text-xs text-slate-400">هنوز فعالیتی منتشر نشده است.</p>
               ) : (
                 <p className="text-xs text-slate-400">
-                  {Math.min(startIndex, items.length) + 1} تا {endIndex} از {items.length} فعالیت
+                  {startIndex + 1} تا {endIndex} از {items.length} فعالیت
                 </p>
               )}
             </div>
@@ -114,6 +114,7 @@ export default async function ActivitiesPage({
             pageNumber={pageNumber}
             hasPreviousPage={pageNumber > 1}
             hasNextPage={endIndex < items.length}
+            totalCount={items.length}
           />
         )}
       </div>
