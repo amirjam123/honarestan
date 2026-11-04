@@ -1,15 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Vazirmatn } from "next/font/google";
 import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
-
-const vazir = Vazirmatn({
-  subsets: ["arabic"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-vazir",
-  preload: true,
-});
 
 export const metadata: Metadata = {
   title: {
@@ -62,12 +53,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" className={`h-full antialiased ${vazir.variable}`}>
+    <html lang="fa" dir="rtl" className="h-full antialiased">
       <head>
         <meta name="theme-color" content="#2563eb" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
       </head>
-      <body className="min-h-full flex flex-col font-[family-name:var(--font-vazir)]">
+      <body className="min-h-full flex flex-col">
         <a href="#main-content" className="skip-to-content">
           رفتن به محتوای اصلی
         </a>
