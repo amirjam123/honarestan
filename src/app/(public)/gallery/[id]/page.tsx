@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ImageLightbox from "@/components/ui/ImageLightbox";
-import { generateSeoMetadata, generateBreadcrumbJsonLd, generateJsonLd, getSeoForPage, SITE_URL } from "@/lib/seo";
+import JsonLd from "@/components/ui/JsonLd";
+import { generateSeoMetadata, generateBreadcrumbJsonLd, generateWebSiteJsonLd, getSeoForPage, SITE_URL } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
