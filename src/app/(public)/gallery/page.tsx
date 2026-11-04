@@ -21,8 +21,6 @@ export default async function GalleryPage() {
     getSeoForPage("/gallery"),
   ]);
 
-  const categories = [...new Set(items.map((item) => item.category))];
-
   return (
     <div>
       <JsonLd data={generateWebPageJsonLd("/gallery", "گالری تصاویر هنرستان فنی حرفه ای هادی", "تصاویر هنرستان فنی حرفه ای هادی.")} />
@@ -35,19 +33,6 @@ export default async function GalleryPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         {items.length > 0 ? (
           <>
-            <div className="flex flex-wrap gap-2 mb-8 justify-center">
-              <span className="px-3.5 py-1.5 bg-primary-600 text-white rounded-lg text-xs font-medium">
-                همه
-              </span>
-              {categories.map((cat) => (
-                <span
-                  key={cat}
-                  className="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-lg text-xs font-medium hover:bg-slate-50 transition-colors cursor-pointer"
-                >
-                  {cat}
-                </span>
-              ))}
-            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {items.map((item) => (
                 <GalleryItem

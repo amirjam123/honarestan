@@ -16,7 +16,7 @@ export default function AdminGalleryPage() {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", description: "", image: "", category: "general" });
+  const [form, setForm] = useState({ title: "", description: "", image: "" });
   const [uploading, setUploading] = useState(false);
 
   const fetchItems = useCallback(async () => {
@@ -52,7 +52,7 @@ export default function AdminGalleryPage() {
   };
 
   const handleEdit = (item: GalleryItem) => {
-    setForm({ title: item.title, description: item.description || "", image: item.image, category: item.category });
+    setForm({ title: item.title, description: item.description || "", image: item.image });
     setEditingId(item.id);
     setShowForm(true);
   };
@@ -64,7 +64,7 @@ export default function AdminGalleryPage() {
   };
 
   const resetForm = () => {
-    setForm({ title: "", description: "", image: "", category: "general" });
+    setForm({ title: "", description: "", image: "" });
     setEditingId(null);
     setShowForm(false);
   };
@@ -101,17 +101,6 @@ export default function AdminGalleryPage() {
               <label className="block text-xs font-medium text-slate-600 mb-1.5">یا آدرس تصویر (URL)</label>
               <input type="text" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="admin-input" />
             </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1.5">دسته‌بندی</label>
-              <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="admin-input">
-                <option value="general">عمومی</option>
-                <option value="painting">نقاشی</option>
-                <option value="sculpture">مجسمه‌سازی</option>
-                <option value="calligraphy">خوشنویسی</option>
-                <option value="photography">عکاسی</option>
-                <option value="digital">دیجیتال آرت</option>
-              </select>
-            </div>
             <div className="flex gap-3">
               <button type="submit" className="admin-btn-primary">{editingId ? "ذخیره تغییرات" : "افزودن"}</button>
               <button type="button" onClick={resetForm} className="admin-btn-secondary">انصراف</button>
@@ -132,7 +121,6 @@ export default function AdminGalleryPage() {
                 <img src={item.image} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
               </div>
               <h3 className="font-semibold text-sm text-slate-800">{item.title}</h3>
-              <p className="text-[11px] text-slate-400">{item.category}</p>
               <div className="flex gap-1.5 mt-3">
                 <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-1 px-2.5 py-1.5 bg-blue-50 text-blue-600 rounded text-xs hover:bg-blue-100 transition-colors">
                   <Pencil size={12} />
