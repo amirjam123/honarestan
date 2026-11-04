@@ -34,7 +34,7 @@ export default async function GalleryDetailPage({
       <JsonLd data={generateWebSiteJsonLd()} />
       <h1 className="text-2xl font-bold">{gallery.title}</h1>
       {gallery.image && (
-        <ImageLightbox src={gallery.image} alt={gallery.title} />
+        <ImageLightbox src={gallery.image} alt={gallery.title} children={null} />
       )}
       <p>{gallery.description || ""}</p>
       <Link href="/gallery" className="mt-4 text-primary-600 hover:text-primary-700">
