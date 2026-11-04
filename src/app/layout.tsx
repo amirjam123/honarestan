@@ -42,6 +42,13 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL(SITE_URL),
   applicationName: "هنرستان فنی و حرفه ای هادی",
+  icons: [
+    {
+      url: "/icon.svg",
+      type: "image/svg+xml",
+      sizes: "any",
+    },
+  ],
 };
 
 export const viewport: Viewport = {
@@ -58,6 +65,7 @@ export default function RootLayout({
     <html lang="fa" dir="rtl" className={`h-full antialiased ${vazir.variable}`}>
       <head>
         <meta name="theme-color" content="#2563eb" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
       </head>
       <body className="min-h-full flex flex-col font-[family-name:var(--font-vazir)]">
         <a href="#main-content" className="skip-to-content">
