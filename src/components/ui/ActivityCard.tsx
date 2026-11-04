@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import { Activity } from "@/lib/activities";
-import { ActivityImage } from "./ActivityImage";
+import { ActivityImage } from "@/components/ui/ActivityImage";
 
 export interface ActivityCardProps {
   activity: Activity;
