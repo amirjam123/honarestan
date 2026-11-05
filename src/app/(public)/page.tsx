@@ -412,6 +412,10 @@ export default async function HomePage() {
         <GalleryPreviewSection />
       </Suspense>
 
+      <Suspense fallback={<SectionSkeleton }}>
+        <LatestActivitiesSection />
+      </Suspense>
+
       {/* CTA Section */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="bg-[#0c1929] rounded-2xl p-8 lg:p-14 text-white text-center">
