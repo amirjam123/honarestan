@@ -5,15 +5,15 @@ import NewsCard from "@/components/ui/NewsCard";
 import JsonLd from "@/components/ui/JsonLd";
 import ImageLightbox from "@/components/ui/ImageLightbox";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { getLatestActivities } from "@/lib/activities";
-import ActivityCard from "@/components/ui/ActivityCard";
-import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd, generateWebSiteJsonLd, generateJsonLd } from "@/lib/seo";
+import { prisma } from "../lib/prisma";
+import { getLatestActivities } from "../lib/activities";
+import ActivityCard from "../components/ui/ActivityCard";
+import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd, generateWebSiteJsonLd, generateJsonLd } from "../lib/seo";
 import {
   BookOpen, UserGroup,
   ArrowLeft,
   Photo, Sparkles,
-} from "@/components/icons";
+} from "../components/icons";
 
 export const dynamic = "force-dynamic";
 

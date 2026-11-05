@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Photo, ArrowLeft } from "@/components/icons";
-import { getActivities } from "@/lib/activities";
-import ActivitiesList from "@/components/ui/ActivitiesList";
+import { Photo, ArrowLeft } from "../components/icons";
+import { getActivities } from "../lib/activities";
+import ActivitiesList from "../components/ui/ActivitiesList";
 
 const PAGE_SIZE = 12;
 
