@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Photo } from "./icons";
+import { Photo } from "../icons";
 
 interface ActivityImageProps {
   src?: string | null;
