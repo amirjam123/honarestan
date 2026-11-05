@@ -393,6 +393,10 @@ export default async function HomePage() {
       </Suspense>
 
       <Suspense fallback={<SectionSkeleton />}>
+        <LatestActivitiesSection />
+      </Suspense>
+
+      <Suspense fallback={<SectionSkeleton />}>
         <PrincipalSection />
       </Suspense>
 
@@ -410,10 +414,6 @@ export default async function HomePage() {
 
       <Suspense fallback={<SectionSkeleton />}>
         <GalleryPreviewSection />
-      </Suspense>
-
-      <Suspense fallback={<SectionSkeleton />}>
-        <LatestActivitiesSection />
       </Suspense>
 
       {/* CTA Section */}
