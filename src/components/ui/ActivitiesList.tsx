@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ActivityCard } from "./ActivityCard";
+import { Activity } from "../../lib/activities";
 
 const PAGE_SIZE = 12;
 
@@ -9,7 +10,7 @@ export default function ActivitiesList({
   hasPreviousPage,
   hasNextPage,
 }: {
-  activities: Array<{ id: string; kind: "gallery" | "news" | "event" }>;
+  activities: Activity[];
   pageNumber: number;
   totalCount: number;
   hasPreviousPage: boolean;
