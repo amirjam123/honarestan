@@ -7,6 +7,7 @@ import ImageLightbox from "@/components/ui/ImageLightbox";
 import Link from "next/link";
 import { prisma } from "../../lib/prisma";
 import { getLatestActivities } from "../../lib/activities";
+import { formatDate } from "../../lib/utils";
 import { ActivityCard } from "../../components/ui/ActivityCard";
 import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd, generateWebSiteJsonLd, generateJsonLd } from "../../lib/seo";
 import {
