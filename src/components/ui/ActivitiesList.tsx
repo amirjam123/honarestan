@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ActivityCard from "./ActivityCard";
+import { ActivityCard } from "./ActivityCard";
 
 const PAGE_SIZE = 12;
 
