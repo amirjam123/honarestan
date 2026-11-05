@@ -412,7 +412,7 @@ export default async function HomePage() {
         <GalleryPreviewSection />
       </Suspense>
 
-      <Suspense fallback={<SectionSkeleton }}>
+      <Suspense fallback={<SectionSkeleton />}>
         <LatestActivitiesSection />
       </Suspense>
 

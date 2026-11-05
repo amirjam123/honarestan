@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 
-const PROJECT_ROOT = resolve(process.cwd());
+const PROJECT_ROOT = resolve(/*turbopackIgnore: true*/ process.cwd());
 
 const FILES_TO_SYNC = [
   "CLAUDE.md",
@@ -47,7 +47,7 @@ export async function syncPasswordInFiles(
 
   for (const file of FILES_TO_SYNC) {
     try {
-      const filePath = resolve(PROJECT_ROOT, file);
+      const filePath = resolve(/*turbopackIgnore: true*/ PROJECT_ROOT, file);
       let content = await readFile(filePath, "utf-8");
       let changed = false;
 
