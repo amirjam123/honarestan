@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { formatDate } from "../../lib/utils";
-import { Activity } from "../lib/activities";
+import { Activity } from "../../lib/activities";
 import { ActivityImage } from "./ActivityImage";
 
 export interface ActivityCardProps {
