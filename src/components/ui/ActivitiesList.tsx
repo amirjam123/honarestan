@@ -7,6 +7,7 @@ const PAGE_SIZE = 12;
 export default function ActivitiesList({
   activities,
   pageNumber,
+  totalCount,
   hasPreviousPage,
   hasNextPage,
 }: {
