@@ -12,7 +12,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return generateSeoMetadata("/gallery");
 }
 
-export default async function GalleryPage() {
+export default async function GalleryPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const targetItemId = typeof params.item === "string" ? params.item : undefined;
+
   const [items, seo] = await Promise.all([
     prisma.gallery.findMany({
       where: { deletedAt: null },
@@ -41,6 +48,7 @@ export default async function GalleryPage() {
                   title={item.title}
                   image={item.image}
                   description={item.description}
+                  open={targetItemId === item.id}
                 />
               ))}
             </div>

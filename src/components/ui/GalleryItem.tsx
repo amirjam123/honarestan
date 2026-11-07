@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { XMark, Trash } from "@/components/icons";
 
 interface GalleryItemProps {
@@ -9,12 +9,33 @@ interface GalleryItemProps {
   image: string;
   description?: string | null;
   onDelete?: (id: string) => void;
+  /** When true, opens the existing image lightbox and scrolls the item into view. */
+  open?: boolean;
 }
 
-export default function GalleryItem({ id, title, image, description, onDelete }: GalleryItemProps) {
-  const [showModal, setShowModal] = useState(false);
+export default function GalleryItem({
+  id,
+  title,
+  image,
+  description,
+  onDelete,
+  open = false,
+}: GalleryItemProps) {
+  const [showModal, setShowModal] = useState(open);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const closeModal = useCallback(() => setShowModal(false), []);
+
+  useEffect(() => {
+    setShowModal(open);
+    if (open && wrapperRef.current) {
+      wrapperRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!showModal) return;
@@ -31,7 +52,13 @@ export default function GalleryItem({ id, title, image, description, onDelete }:
 
   return (
     <>
-      <div className="group bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg hover:border-slate-300 transition-all duration-300">
+      <div
+        ref={wrapperRef}
+        id={`gallery-item-${id}`}
+        className={`group bg-white rounded-xl overflow-hidden hover:shadow-lg hover:border-slate-300 transition-all duration-300 border ${
+          open ? "border-primary-500 ring-1 ring-primary-500" : "border-slate-200"
+        }`}
+      >
         <div className="aspect-square bg-slate-100 relative overflow-hidden">
           <img
             src={image}

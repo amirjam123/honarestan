@@ -39,7 +39,7 @@ export default async function EventsPage() {
         ) : (
           <div className="space-y-6">
             {events.map((event) => (
-              <div key={event.id}>
+              <div id={event.id} key={event.id} className="event-item">
                 <JsonLd data={generateEventJsonLd({
                   title: event.title,
                   description: event.description,

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ActivityCard } from "./ActivityCard";
-import { Activity } from "../../lib/activities";
+import { Activity, activityHref } from "../../lib/activities";
 
 const PAGE_SIZE = 12;
 
@@ -27,11 +27,7 @@ export default function ActivitiesList({
           <ActivityCard
             key={activity.id}
             activity={activity}
-            href={
-              activity.kind === "event"
-                ? `/events#${activity.id}`
-                : `/${activity.kind}/${activity.id}`
-            }
+            href={activityHref(activity)}
           />
         ))}
       </div>

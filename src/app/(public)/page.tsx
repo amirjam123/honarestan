@@ -6,7 +6,7 @@ import JsonLd from "@/components/ui/JsonLd";
 import ImageLightbox from "@/components/ui/ImageLightbox";
 import Link from "next/link";
 import { prisma } from "../../lib/prisma";
-import { getLatestActivities } from "../../lib/activities";
+import { activityHref, getLatestActivities } from "../../lib/activities";
 import { formatDate } from "../../lib/utils";
 import { ActivityCard } from "../../components/ui/ActivityCard";
 import { generateSeoMetadata, getSeoForPage, generateSchoolJsonLd, generateWebSiteJsonLd, generateJsonLd } from "../../lib/seo";
@@ -357,11 +357,7 @@ async function LatestActivitiesSection() {
             <ActivityCard
               key={activity.id}
               activity={activity}
-              href={
-                activity.kind === "event"
-                  ? `/events#${activity.id}`
-                  : `/${activity.kind}/${activity.id}`
-              }
+              href={activityHref(activity)}
             />
           ))}
         </div>

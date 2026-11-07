@@ -130,6 +130,16 @@ export async function getActivities({
   };
 }
 
+export function activityHref(activity: Activity): string {
+  if (activity.kind === "gallery") {
+    return `/gallery?item=${activity.id}`;
+  }
+  if (activity.kind === "news") {
+    return `/news/${activity.id}`;
+  }
+  return `/events#${activity.id}`;
+}
+
 export async function getLatestActivities({
   limit = 6,
   type,
