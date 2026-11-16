@@ -1,5 +1,5 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&subset=arabic");
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&subset=arabic");
 
 /* Fix Chrome RTL: margin-inline:auto breaks centering in direction:rtl */
 [dir] .mx-auto {
@@ -25,7 +25,7 @@ html {
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
   width: 100%;
-  /* جلوگیری از رفتارهای غیرمنتظره کشسانی اسکرول */
+  /* Ø¬Ù„ÙˆÚ¯ÛŒØ±ÛŒ Ø§Ø² Ø±ÙØªØ§Ø±Ù‡Ø§ÛŒ ØºÛŒØ±Ù…Ù†ØªØ¸Ø±Ù‡ Ú©Ø´Ø³Ø§Ù†ÛŒ Ø§Ø³Ú©Ø±ÙˆÙ„ */
   overscroll-behavior-x: none;
 }
 

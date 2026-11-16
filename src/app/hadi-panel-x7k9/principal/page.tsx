@@ -1,7 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { Save, CheckCircle, Loader } from "@/components/icons";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 interface PrincipalProfile {
   name: string;
@@ -54,7 +55,7 @@ export default function AdminPrincipalPage() {
         }
       }
     } catch {
-      setError("خطا در دریافت اطلاعات");
+      setError("Ø®Ø·Ø§ Ø¯Ø± Ø¯Ø±ÛŒØ§ÙØª Ø§Ø·Ù„Ø§Ø¹Ø§Øª");
     } finally {
       setLoading(false);
     }
@@ -73,7 +74,7 @@ export default function AdminPrincipalPage() {
         JSON.parse(profile.achievements);
       }
     } catch {
-      setError("فرمت دستاوردها نامعتبر است. لطفاً JSON معتبر وارد کنید.");
+      setError("ÙØ±Ù…Øª Ø¯Ø³ØªØ§ÙˆØ±Ø¯Ù‡Ø§ Ù†Ø§Ù…Ø¹ØªØ¨Ø± Ø§Ø³Øª. Ù„Ø·ÙØ§Ù‹ JSON Ù…Ø¹ØªØ¨Ø± ÙˆØ§Ø±Ø¯ Ú©Ù†ÛŒØ¯.");
       setSaving(false);
       return;
     }
@@ -89,10 +90,10 @@ export default function AdminPrincipalPage() {
         setSuccess(true);
         setTimeout(() => setSuccess(false), 3000);
       } else {
-        setError("خطا در ذخیره اطلاعات");
+        setError("Ø®Ø·Ø§ Ø¯Ø± Ø°Ø®ÛŒØ±Ù‡ Ø§Ø·Ù„Ø§Ø¹Ø§Øª");
       }
     } catch {
-      setError("خطا در ارتباط با سرور");
+      setError("Ø®Ø·Ø§ Ø¯Ø± Ø§Ø±ØªØ¨Ø§Ø· Ø¨Ø§ Ø³Ø±ÙˆØ±");
     } finally {
       setSaving(false);
     }
@@ -108,43 +109,36 @@ export default function AdminPrincipalPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-6 text-slate-900">پروفایل مدیر</h1>
+      <h1 className="text-xl font-bold mb-6 text-slate-900">Ù¾Ø±ÙˆÙØ§ÛŒÙ„ Ù…Ø¯ÛŒØ±</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="admin-card">
-          <h2 className="text-sm font-bold mb-4 text-slate-800">اطلاعات شخصی</h2>
+          <h2 className="text-sm font-bold mb-4 text-slate-800">Ø§Ø·Ù„Ø§Ø¹Ø§Øª Ø´Ø®ØµÛŒ</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                نام و نام خانوادگی
+                Ù†Ø§Ù… Ùˆ Ù†Ø§Ù… Ø®Ø§Ù†ÙˆØ§Ø¯Ú¯ÛŒ
               </label>
               <input
                 type="text"
-                placeholder="نام مدیر هنرستان..."
+                placeholder="Ù†Ø§Ù… Ù…Ø¯ÛŒØ± Ù‡Ù†Ø±Ø³ØªØ§Ù†..."
                 value={profile.name}
                 onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                 className="admin-input"
               />
             </div>
+            <ImageUpload
+              label="ØªØµÙˆÛŒØ± Ù…Ø¯ÛŒØ± Ù‡Ù†Ø±Ø³ØªØ§Ù†"
+              value={profile.photo || ""}
+              onChange={(url) => setProfile({ ...profile, photo: url })}
+            />
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                آدرس تصویر
+                Ø³Ù…Øª
               </label>
               <input
                 type="text"
-                placeholder="/uploads/principal.jpg"
-                value={profile.photo}
-                onChange={(e) => setProfile({ ...profile, photo: e.target.value })}
-                className="admin-input"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                سمت
-              </label>
-              <input
-                type="text"
-                placeholder="مدیر هنرستان..."
+                placeholder="Ù…Ø¯ÛŒØ± Ù‡Ù†Ø±Ø³ØªØ§Ù†..."
                 value={profile.position}
                 onChange={(e) => setProfile({ ...profile, position: e.target.value })}
                 className="admin-input"
@@ -154,15 +148,15 @@ export default function AdminPrincipalPage() {
         </div>
 
         <div className="admin-card">
-          <h2 className="text-sm font-bold mb-4 text-slate-800">محتوای متنی</h2>
+          <h2 className="text-sm font-bold mb-4 text-slate-800">Ù…Ø­ØªÙˆØ§ÛŒ Ù…ØªÙ†ÛŒ</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                بیوگرافی
+                Ø¨ÛŒÙˆÚ¯Ø±Ø§ÙÛŒ
               </label>
               <textarea
                 rows={4}
-                placeholder="بیوگرافی مدیر هنرستان..."
+                placeholder="Ø¨ÛŒÙˆÚ¯Ø±Ø§ÙÛŒ Ù…Ø¯ÛŒØ± Ù‡Ù†Ø±Ø³ØªØ§Ù†..."
                 value={profile.biography}
                 onChange={(e) => setProfile({ ...profile, biography: e.target.value })}
                 className="admin-input resize-none"
@@ -170,11 +164,11 @@ export default function AdminPrincipalPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                پیام خوش‌آمدگویی
+                Ù¾ÛŒØ§Ù… Ø®ÙˆØ´â€ŒØ¢Ù…Ø¯Ú¯ÙˆÛŒÛŒ
               </label>
               <textarea
                 rows={4}
-                placeholder="پیام خوش‌آمدگویی به دانش‌آموزان و والدین..."
+                placeholder="Ù¾ÛŒØ§Ù… Ø®ÙˆØ´â€ŒØ¢Ù…Ø¯Ú¯ÙˆÛŒÛŒ Ø¨Ù‡ Ø¯Ø§Ù†Ø´â€ŒØ¢Ù…ÙˆØ²Ø§Ù† Ùˆ ÙˆØ§Ù„Ø¯ÛŒÙ†..."
                 value={profile.welcomeMessage}
                 onChange={(e) => setProfile({ ...profile, welcomeMessage: e.target.value })}
                 className="admin-input resize-none"
@@ -182,11 +176,11 @@ export default function AdminPrincipalPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                رزومه
+                Ø±Ø²ÙˆÙ…Ù‡
               </label>
               <textarea
                 rows={4}
-                placeholder="سوابق تحصیلی و حرفه‌ای..."
+                placeholder="Ø³ÙˆØ§Ø¨Ù‚ ØªØ­ØµÛŒÙ„ÛŒ Ùˆ Ø­Ø±ÙÙ‡â€ŒØ§ÛŒ..."
                 value={profile.resume}
                 onChange={(e) => setProfile({ ...profile, resume: e.target.value })}
                 className="admin-input resize-none"
@@ -194,11 +188,11 @@ export default function AdminPrincipalPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                دستاوردها (JSON)
+                Ø¯Ø³ØªØ§ÙˆØ±Ø¯Ù‡Ø§ (JSON)
               </label>
               <textarea
                 rows={3}
-                placeholder='["کسب رتبه اول استان", "راه‌اندازی رشته جدید"]'
+                placeholder='["Ú©Ø³Ø¨ Ø±ØªØ¨Ù‡ Ø§ÙˆÙ„ Ø§Ø³ØªØ§Ù†", "Ø±Ø§Ù‡â€ŒØ§Ù†Ø¯Ø§Ø²ÛŒ Ø±Ø´ØªÙ‡ Ø¬Ø¯ÛŒØ¯"]'
                 value={profile.achievements}
                 onChange={(e) => setProfile({ ...profile, achievements: e.target.value })}
                 className="admin-input resize-none"
@@ -206,11 +200,11 @@ export default function AdminPrincipalPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                اطلاعات تماس (اختیاری)
+                Ø§Ø·Ù„Ø§Ø¹Ø§Øª ØªÙ…Ø§Ø³ (Ø§Ø®ØªÛŒØ§Ø±ÛŒ)
               </label>
               <textarea
                 rows={2}
-                placeholder="شماره تماس، ایمیل و..."
+                placeholder="Ø´Ù…Ø§Ø±Ù‡ ØªÙ…Ø§Ø³ØŒ Ø§ÛŒÙ…ÛŒÙ„ Ùˆ..."
                 value={profile.contactInfo}
                 onChange={(e) => setProfile({ ...profile, contactInfo: e.target.value })}
                 className="admin-input resize-none"
@@ -220,7 +214,7 @@ export default function AdminPrincipalPage() {
         </div>
 
         <div className="admin-card">
-          <h2 className="text-sm font-bold mb-4 text-slate-800">تنظیمات انتشار</h2>
+          <h2 className="text-sm font-bold mb-4 text-slate-800">ØªÙ†Ø¸ÛŒÙ…Ø§Øª Ø§Ù†ØªØ´Ø§Ø±</h2>
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -230,7 +224,7 @@ export default function AdminPrincipalPage() {
               className="w-4 h-4 rounded"
             />
             <label htmlFor="published" className="text-xs text-slate-600">
-              منتشر شده
+              Ù…Ù†ØªØ´Ø± Ø´Ø¯Ù‡
             </label>
           </div>
         </div>
@@ -244,12 +238,12 @@ export default function AdminPrincipalPage() {
             {saving ? (
               <>
                 <Loader size={16} />
-                در حال ذخیره...
+                Ø¯Ø± Ø­Ø§Ù„ Ø°Ø®ÛŒØ±Ù‡...
               </>
             ) : (
               <>
                 <Save size={16} />
-                ذخیره تغییرات
+                Ø°Ø®ÛŒØ±Ù‡ ØªØºÛŒÛŒØ±Ø§Øª
               </>
             )}
           </button>
@@ -257,7 +251,7 @@ export default function AdminPrincipalPage() {
           {success && (
             <span className="flex items-center gap-1.5 text-emerald-600 text-xs font-medium">
               <CheckCircle size={14} />
-              اطلاعات با موفقیت ذخیره شد
+              Ø§Ø·Ù„Ø§Ø¹Ø§Øª Ø¨Ø§ Ù…ÙˆÙÙ‚ÛŒØª Ø°Ø®ÛŒØ±Ù‡ Ø´Ø¯
             </span>
           )}
 
@@ -271,3 +265,4 @@ export default function AdminPrincipalPage() {
     </div>
   );
 }
+
